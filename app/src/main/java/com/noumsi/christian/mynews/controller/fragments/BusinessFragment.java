@@ -1,6 +1,7 @@
 package com.noumsi.christian.mynews.controller.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.noumsi.christian.mynews.R;
+import com.noumsi.christian.mynews.controller.activities.ArticleContainerActivity;
 import com.noumsi.christian.mynews.utils.ItemClickSupport;
 import com.noumsi.christian.mynews.views.adapters.ArticleAdapter;
 import com.noumsi.christian.mynews.webservices.searcharticle.Search;
@@ -24,6 +26,9 @@ import com.noumsi.christian.mynews.webservices.searcharticle.SearchArticleDoc;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_TITLE_ARTICLE;
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_URL_ARTICLE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -86,8 +91,12 @@ public class BusinessFragment extends Fragment implements SearchArticleCall.Call
                 .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
                     @Override
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                        SearchArticleDoc mostPopularResult = mArticleAdapter.getArticle(position);
-                        Toast.makeText(getContext(), mostPopularResult.getSnippet(), Toast.LENGTH_SHORT).show();
+                        SearchArticleDoc searchArticleDoc = mArticleAdapter.getArticle(position);
+                        // We start article container activity
+                        Intent articleContainer = new Intent(getContext(), ArticleContainerActivity.class);
+                        articleContainer.putExtra(EXTRA_URL_ARTICLE, searchArticleDoc.getWeb_url());
+                        articleContainer.putExtra(EXTRA_TITLE_ARTICLE, searchArticleDoc.getSnippet());
+                        startActivity(articleContainer);
                     }
                 });
     }

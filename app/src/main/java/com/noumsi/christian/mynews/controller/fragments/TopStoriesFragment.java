@@ -1,6 +1,7 @@
 package com.noumsi.christian.mynews.controller.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.noumsi.christian.mynews.R;
+import com.noumsi.christian.mynews.controller.activities.ArticleContainerActivity;
 import com.noumsi.christian.mynews.utils.ItemClickSupport;
 import com.noumsi.christian.mynews.views.adapters.TopStoryAdapter;
 import com.noumsi.christian.mynews.webservices.topstorie.TopStories;
@@ -23,6 +25,9 @@ import com.noumsi.christian.mynews.webservices.topstorie.TopStoriesResult;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_TITLE_ARTICLE;
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_URL_ARTICLE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -76,7 +81,11 @@ public class TopStoriesFragment extends Fragment implements TopStoriesCall.Callb
                     @Override
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                         TopStoriesResult topStoriesResult = mStoriesAdapter.getTopStoriesResult(position);
-                        Toast.makeText(getContext(), topStoriesResult.getTitle(), Toast.LENGTH_SHORT).show();
+                        // We start article container activity
+                        Intent articleContainer = new Intent(getContext(), ArticleContainerActivity.class);
+                        articleContainer.putExtra(EXTRA_URL_ARTICLE, topStoriesResult.getUrl());
+                        articleContainer.putExtra(EXTRA_TITLE_ARTICLE, topStoriesResult.getTitle());
+                        startActivity(articleContainer);
                     }
                 });
     }

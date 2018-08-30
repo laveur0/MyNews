@@ -1,6 +1,7 @@
 package com.noumsi.christian.mynews.controller.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.noumsi.christian.mynews.R;
+import com.noumsi.christian.mynews.controller.activities.ArticleContainerActivity;
 import com.noumsi.christian.mynews.utils.ItemClickSupport;
 import com.noumsi.christian.mynews.views.adapters.PopularAdapter;
 import com.noumsi.christian.mynews.webservices.mostpopular.MostPopular;
@@ -23,6 +25,9 @@ import com.noumsi.christian.mynews.webservices.mostpopular.MostPopularResult;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_TITLE_ARTICLE;
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_URL_ARTICLE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -85,7 +90,11 @@ public class MostPopularFragment extends Fragment implements MostPopularCall.Cal
                     @Override
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                         MostPopularResult mostPopularResult = mPopularAdapter.getPopular(position);
-                        Toast.makeText(getContext(), mostPopularResult.getTitle(), Toast.LENGTH_SHORT).show();
+                        // We start article container activity
+                        Intent articleContainer = new Intent(getContext(), ArticleContainerActivity.class);
+                        articleContainer.putExtra(EXTRA_URL_ARTICLE, mostPopularResult.getUrl());
+                        articleContainer.putExtra(EXTRA_TITLE_ARTICLE, mostPopularResult.getTitle());
+                        startActivity(articleContainer);
                     }
                 });
     }
