@@ -6,19 +6,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_margin="@dimen/activity_horizontal_margin"
-    tools:context=".controller.activities.SearchActivity">
+    tools:context=".controller.activities.NotificationActivity">
 
     <include layout="@layout/search_widget"/>
 
-    <Button
-        android:id="@+id/activity_search_search_button"
+    <Switch
+        android:id="@+id/activity_notification_switch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/action_search"
-        android:textAlignment="center"
-        android:textColor="@android:color/white"
-        android:background="@color/colorPrimary"
-        android:enabled="false"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
-
+        android:text="@string/enable_notifications" />
 </LinearLayout>

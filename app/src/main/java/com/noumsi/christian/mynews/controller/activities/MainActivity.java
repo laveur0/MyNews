@@ -86,6 +86,8 @@ public class MainActivity extends AppCompatActivity
                 startActivity(search);
                 return true;
             case R.id.action_notifications:
+                Intent notification = new Intent(this, NotificationActivity.class);
+                startActivity(notification);
                 return true;
             case R.id.action_help:
                 return true;

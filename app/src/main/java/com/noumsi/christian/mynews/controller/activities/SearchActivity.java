@@ -31,15 +31,15 @@ import static com.noumsi.christian.mynews.utils.Constants.EXTRA_QUERY_TERM;
 
 public class SearchActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher {
 
-    @BindView(R.id.activity_search_edit_text_query) EditText mEditTextQuery;
-    @BindView(R.id.activity_search_edit_text_date_start) EditText mEditTextDateStart;
-    @BindView(R.id.activity_search_edit_text_date_end) EditText mEditTextDateEnd;
-    @BindView(R.id.activity_search_arts_cat) CheckBox mCheckBoxArtsCat;
-    @BindView(R.id.activity_search_business_cat) CheckBox mCheckBoxBusinessCat;
-    @BindView(R.id.activity_search_entrepreneurs_cat) CheckBox mCheckBoxEntrepreneursCat;
-    @BindView(R.id.activity_search_politics_cat) CheckBox mCheckBoxPoliticsCat;
-    @BindView(R.id.activity_search_sports_cat) CheckBox mCheckBoxSportsCat;
-    @BindView(R.id.activity_search_travel_cat) CheckBox mCheckBoxTravelCat;
+    @BindView(R.id.search_widget_edit_text_query) EditText mEditTextQuery;
+    @BindView(R.id.search_widget_edit_text_date_start) EditText mEditTextDateStart;
+    @BindView(R.id.search_widget_edit_text_date_end) EditText mEditTextDateEnd;
+    @BindView(R.id.search_widget_arts_cat) CheckBox mCheckBoxArtsCat;
+    @BindView(R.id.search_widget_business_cat) CheckBox mCheckBoxBusinessCat;
+    @BindView(R.id.search_widget_entrepreneurs_cat) CheckBox mCheckBoxEntrepreneursCat;
+    @BindView(R.id.search_widget_politics_cat) CheckBox mCheckBoxPoliticsCat;
+    @BindView(R.id.search_widget_sports_cat) CheckBox mCheckBoxSportsCat;
+    @BindView(R.id.search_widget_travel_cat) CheckBox mCheckBoxTravelCat;
     @BindView(R.id.activity_search_search_button) Button mButtonSearch;
 
     private DatePickerDialog.OnDateSetListener mDateSetListenerForBeginDate, mDateSetListenerForEndDate;
@@ -106,11 +106,11 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.activity_search_edit_text_date_start:
+            case R.id.search_widget_edit_text_date_start:
                 // We configure editText
                 this.configureDateEditText(true);
                 break;
-            case R.id.activity_search_edit_text_date_end:
+            case R.id.search_widget_edit_text_date_end:
                 // We configure editText
                 this.configureDateEditText(false);
                 break;
@@ -123,28 +123,29 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 searchResultIntent.putExtra(EXTRA_END_DATE, mEditTextDateEnd.getText() != null ? mEditTextDateEnd.getText().toString(): "");
                 startActivity(searchResultIntent);
                 break;
-            case R.id.activity_search_arts_cat:
+            case R.id.search_widget_arts_cat:
                 // We configure search button depending of selection of checkbox and query in edit text
                 configureSearchButton();
                 break;
-            case R.id.activity_search_business_cat:
+            case R.id.search_widget_business_cat:
                 configureSearchButton();
                 break;
-            case R.id.activity_search_entrepreneurs_cat:
+            case R.id.search_widget_entrepreneurs_cat:
                 configureSearchButton();
                 break;
-            case R.id.activity_search_politics_cat:
+            case R.id.search_widget_politics_cat:
                 configureSearchButton();
                 break;
-            case R.id.activity_search_sports_cat:
+            case R.id.search_widget_sports_cat:
                 configureSearchButton();
                 break;
-            case R.id.activity_search_travel_cat:
+            case R.id.search_widget_travel_cat:
                 configureSearchButton();
                 break;
         }
     }
 
+    // We get text of all checked Checkbox who fq parameter in Search API on NYT
     private String getFQ() {
         String fq = "news_desk:(";
         if (mCheckBoxTravelCat.isChecked())
