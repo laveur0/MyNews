@@ -8,6 +8,20 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="checkBoxStyle" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorAccent">@color/colorSecondary</item>
+    </style>
+
+    <style name="searchViewStyle" parent="Widget.AppCompat.SearchView">
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="queryBackground">@color/colorPrimary</item>
+        <item name="submitBackground">@color/colorPrimary</item>
+    </style>
+
+    <style name="editTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

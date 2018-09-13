@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
+import com.noumsi.christian.mynews.GlideApp;
 import com.noumsi.christian.mynews.R;
 import com.noumsi.christian.mynews.webservices.mostpopular.MostPopularResult;
 
@@ -29,12 +30,16 @@ public class PopularViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void updateWithPopular(MostPopularResult result, RequestManager glide) {
+    public void updateWithPopular(MostPopularResult result) {
         mSection.setText(result.getSection() != null ? result.getSection() : "");
         mUpdateDate.setText(result.getPublished_date() != null ? this.convertDate(result.getPublished_date()) : "");
         mTitle.setText(result.getTitle() != null ? result.getTitle() : "");
-        glide.load(result.getMedia().size() > 0 ? result.getMedia().get(0).getMediadata().get(0).getUrl() : "")
-                .apply(RequestOptions.centerInsideTransform()).into(mImageView);
+
+        GlideApp.with(mImageView)
+                .load(result.getMedia().size() > 0 ? result.getMedia().get(0).getMediadata().get(0).getUrl() : "")
+                .error(R.drawable.ic_launcher_background)
+                .apply(RequestOptions.centerInsideTransform())
+                .into(mImageView);
     }
 
     private String convertDate(String published_date) {

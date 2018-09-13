@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.noumsi.christian.mynews.GlideApp;
 import com.noumsi.christian.mynews.R;
 import com.noumsi.christian.mynews.controller.activities.ArticleContainerActivity;
 import com.noumsi.christian.mynews.utils.ItemClickSupport;
@@ -67,7 +68,7 @@ public class TopStoriesFragment extends Fragment implements TopStoriesCall.Callb
     }
 
     private void configureRecyclerView() {
-        mStoriesAdapter = new TopStoryAdapter(mTopStories, Glide.with(this));
+        mStoriesAdapter = new TopStoryAdapter(mTopStories);
         // we attach the adapter to recyclerView
         rv.setAdapter(mStoriesAdapter);
         // set layout manager

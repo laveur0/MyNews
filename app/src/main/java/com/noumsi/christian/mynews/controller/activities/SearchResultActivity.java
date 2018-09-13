@@ -1,80 +1,70 @@
-package com.noumsi.christian.mynews.controller.fragments;
-
+package com.noumsi.christian.mynews.controller.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.noumsi.christian.mynews.R;
-import com.noumsi.christian.mynews.controller.activities.ArticleContainerActivity;
 import com.noumsi.christian.mynews.utils.ItemClickSupport;
 import com.noumsi.christian.mynews.views.adapters.ArticleAdapter;
 import com.noumsi.christian.mynews.webservices.searcharticle.Search;
 import com.noumsi.christian.mynews.webservices.searcharticle.SearchArticleCall;
 import com.noumsi.christian.mynews.webservices.searcharticle.SearchArticleDoc;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_BEGIN_DATE;
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_END_DATE;
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_FQ;
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_QUERY_TERM;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_TITLE_ARTICLE;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_URL_ARTICLE;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BusinessFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class BusinessFragment extends Fragment implements SearchArticleCall.Callbacks{
+public class SearchResultActivity extends AppCompatActivity implements SearchArticleCall.Callbacks{
 
-    @BindView(R.id.fragment_business_swipe_container) SwipeRefreshLayout mSwipeRefreshLayout;
-    @BindView(R.id.fragment_business_recycler_view) RecyclerView mRecyclerView;
+    @BindView(R.id.activity_search_result_refresh_layout) SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.activity_search_result_recycler_view) RecyclerView mRecyclerView;
+
+    String mQueryTerm, mBeginDate, mEndDate, mFQ;
     private ArticleAdapter mArticleAdapter;
     private Search mSearch = null;
-    private RequestManager mGlide;
-    private static final String TAG = "BusinessFragment";
-
-    public BusinessFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment.
-     *
-     * @return A new instance of fragment BusinessFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BusinessFragment newInstance() {
-        return new BusinessFragment();
-    }
+    private SimpleDateFormat mSimpleDateFormat;
+    private static final String TAG = "SearchResultActivity";
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_business, container, false);
-        ButterKnife.bind(this, view);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_search_result);
+        ButterKnife.bind(this);
 
+        Bundle extras = getIntent().getExtras();
+        mQueryTerm = extras.getString(EXTRA_QUERY_TERM);
+        mBeginDate = extras.getString(EXTRA_BEGIN_DATE);
+        mEndDate = extras.getString(EXTRA_END_DATE);
+        mFQ = extras.getString(EXTRA_FQ);
+
+        // We set date format
+        mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         // We configure recycler view
         this.configureRecyclerView();
         // we configure swipe layout
         this.configureSwipeRefreshLayout();
         // We execute http request
-        executeHTTPRequestWithRetrofit();
+        this.executeHTTPRequestWithRetrofit();
         // We configure click on item of recycler view
-        configureOnClickRecyclerView();
-        return view;
+        this.configureOnClickRecyclerView();
     }
 
     private void configureRecyclerView() {
@@ -83,7 +73,7 @@ public class BusinessFragment extends Fragment implements SearchArticleCall.Call
         // we attach adapter to recycler view
         mRecyclerView.setAdapter(mArticleAdapter);
         // we set layout manager
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void configureOnClickRecyclerView() {
@@ -93,7 +83,7 @@ public class BusinessFragment extends Fragment implements SearchArticleCall.Call
                     public void onItemClicked(RecyclerView recyclerView, int position, View v) {
                         SearchArticleDoc searchArticleDoc = mArticleAdapter.getArticle(position);
                         // We start article container activity
-                        Intent articleContainer = new Intent(getContext(), ArticleContainerActivity.class);
+                        Intent articleContainer = new Intent(SearchResultActivity.this, ArticleContainerActivity.class);
                         articleContainer.putExtra(EXTRA_URL_ARTICLE, searchArticleDoc.getWeb_url());
                         articleContainer.putExtra(EXTRA_TITLE_ARTICLE, searchArticleDoc.getSnippet());
                         startActivity(articleContainer);
@@ -103,7 +93,20 @@ public class BusinessFragment extends Fragment implements SearchArticleCall.Call
 
     private void executeHTTPRequestWithRetrofit() {
         this.updateUIWhenStartingHTTPRequest();
-        SearchArticleCall.fetchSearchArticle(this, "", "news_desk:(\"Business\")", null, null, getString(R.string.api_key_nyt));
+
+        /* We convert format date for research */
+        String beginDate = null;
+        String endDate = null;
+
+        try {
+            beginDate = mSimpleDateFormat.format(new SimpleDateFormat("dd/MM/yyyy", Locale.US).parse(mBeginDate));
+            endDate = mSimpleDateFormat.format(new SimpleDateFormat("dd/MM/yyyy", Locale.US).parse(mEndDate));
+            Log.d(TAG, beginDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        SearchArticleCall.fetchSearchArticle(this, mQueryTerm, mFQ, beginDate, endDate, getString(R.string.api_key_nyt));
     }
 
     private void updateUIWhenStartingHTTPRequest() {
@@ -122,7 +125,24 @@ public class BusinessFragment extends Fragment implements SearchArticleCall.Call
     @Override
     public void onResponse(@Nullable Search search) {
         Log.d(TAG, "Success");
-        if (search != null) this.updateUIWithSearchArticle(search);
+        if (search != null) {
+            if (search.getResponse().getDocs().size() < 1)
+                showTextInDialogBox(getString(R.string.no_result_found));
+            else this.updateUIWithSearchArticle(search);
+        }
+    }
+
+    private void showTextInDialogBox(String message) {
+        // We instanciate a builder of alert dialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // We set a message to builder
+        builder.setMessage(message);
+        builder.setTitle(R.string.title_activity_main);
+
+        // We create Alert Dialog from builder
+        AlertDialog dialog = builder.create();
+        // We show alert dialog
+        dialog.show();
     }
 
     private void updateUIWithSearchArticle(Search search) {

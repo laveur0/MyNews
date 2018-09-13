@@ -20,12 +20,10 @@ import com.noumsi.christian.mynews.webservices.topstorie.TopStoriesResult;
 public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryResultViewHolder> {
 
     private TopStories mTopStories;
-    private RequestManager mGlide;
     private static final String TAG = "TopStoryAdapter";
 
-    public TopStoryAdapter(TopStories topStories, RequestManager glide) {
+    public TopStoryAdapter(TopStories topStories) {
         mTopStories = topStories;
-        mGlide = glide;
     }
 
     @NonNull
@@ -39,7 +37,7 @@ public class TopStoryAdapter extends RecyclerView.Adapter<TopStoryResultViewHold
 
     @Override
     public void onBindViewHolder(@NonNull TopStoryResultViewHolder holder, int position) {
-        if (mTopStories != null) holder.updateWithTopStoriesResult(mTopStories.getResults().get(position), mGlide);
+        if (mTopStories != null) holder.updateWithTopStoriesResult(mTopStories.getResults().get(position));
     }
 
     @Override

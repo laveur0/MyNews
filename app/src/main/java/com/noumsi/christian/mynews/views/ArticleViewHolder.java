@@ -5,8 +5,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
+import com.noumsi.christian.mynews.GlideApp;
 import com.noumsi.christian.mynews.R;
 import com.noumsi.christian.mynews.webservices.searcharticle.SearchArticleDoc;
 
@@ -29,9 +29,13 @@ public class ArticleViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void updateWithArticle(SearchArticleDoc result, RequestManager glide) {
-        glide.load(result.getMultimedia().size() > 0 ? result.getMultimedia().get(0).getUrl() : "")
-                .apply(RequestOptions.centerInsideTransform()).into(mImageView);
+    public void updateWithArticle(SearchArticleDoc result) {
+        GlideApp.with(mImageView)
+                .load(result.getMultimedia().size() > 0 ? "https://static01.nyt.com/" + result.getMultimedia().get(0).getUrl() : "")
+                .error(R.drawable.ic_launcher_background)
+                .apply(RequestOptions.centerCropTransform())
+                .into(mImageView);
+
         mSection.setText(result.getNews_desk());
         mUpdateDate.setText(result.getPub_date() != null ? this.convertDate(result.getPub_date()) : "");
         mTitle.setText(result.getSnippet() != null ? result.getSnippet() : "");

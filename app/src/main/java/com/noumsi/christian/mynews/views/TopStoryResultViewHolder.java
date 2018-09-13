@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
+import com.noumsi.christian.mynews.GlideApp;
 import com.noumsi.christian.mynews.R;
 import com.noumsi.christian.mynews.webservices.topstorie.TopStoriesResult;
 
@@ -30,10 +31,13 @@ public class TopStoryResultViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void updateWithTopStoriesResult(TopStoriesResult result, RequestManager glide) {
-        Log.d(TAG, String.valueOf(result.getMultimedia().size()));
-        glide.load(result.getMultimedia().size() > 0 ? result.getMultimedia().get(0).getUrl() : "")
-                .apply(RequestOptions.centerInsideTransform()).into(mImageView);
+    public void updateWithTopStoriesResult(TopStoriesResult result) {
+        GlideApp.with(mImageView)
+                .load(result.getMultimedia().size() > 0 ? result.getMultimedia().get(0).getUrl() : "")
+                .error(R.drawable.ic_launcher_background)
+                .apply(RequestOptions.centerInsideTransform())
+                .into(mImageView);
+
         mSection.setText(result.getSection() != null ?
                 !result.getSection().isEmpty() ?
                         result.getSubsection() != null ?

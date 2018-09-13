@@ -20,12 +20,10 @@ import com.noumsi.christian.mynews.webservices.mostpopular.MostPopularResult;
 public class PopularAdapter extends RecyclerView.Adapter<PopularViewHolder> {
 
     private MostPopular mMostPopular;
-    private RequestManager mGlide;
     private static final String TAG = "PopularAdapter";
 
-    public PopularAdapter(MostPopular mostPopular, RequestManager glide) {
+    public PopularAdapter(MostPopular mostPopular) {
         mMostPopular = mostPopular;
-        mGlide = glide;
     }
 
     @NonNull
@@ -39,7 +37,7 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull PopularViewHolder holder, int position) {
-        if (mMostPopular != null) holder.updateWithPopular(mMostPopular.getResults().get(position), mGlide);
+        if (mMostPopular != null) holder.updateWithPopular(mMostPopular.getResults().get(position));
     }
 
     @Override

@@ -18,11 +18,9 @@ import com.noumsi.christian.mynews.webservices.searcharticle.SearchArticleDoc;
  */
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
     private Search mSearch;
-    private RequestManager mGlide;
 
-    public ArticleAdapter(Search search, RequestManager glide) {
+    public ArticleAdapter(Search search) {
         mSearch = search;
-        mGlide = glide;
     }
 
     @NonNull
@@ -36,7 +34,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ArticleViewHolder holder, int position) {
-        if (mSearch != null) holder.updateWithArticle(mSearch.getResponse().getDocs().get(position), mGlide);
+        if (mSearch != null) holder.updateWithArticle(mSearch.getResponse().getDocs().get(position));
     }
 
     @Override

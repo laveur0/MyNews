@@ -2,9 +2,13 @@ package com.noumsi.christian.mynews.controller.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.webkit.WebView;
 
 import com.noumsi.christian.mynews.R;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -17,7 +21,7 @@ public class ArticleContainerActivity extends AppCompatActivity {
     @BindView(R.id.activity_article_container_web_view) WebView mWebView;
     private String mUrlArticle;
     private String mTitleArticle;
-
+    private static final String TAG = "ArticleContainerActivit";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,16 @@ public class ArticleContainerActivity extends AppCompatActivity {
 
         // We load this url in web view
         this.configureWebView();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void configureToolBar() {

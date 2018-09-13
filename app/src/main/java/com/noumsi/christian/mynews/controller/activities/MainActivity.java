@@ -1,5 +1,6 @@
 package com.noumsi.christian.mynews.controller.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -79,8 +80,17 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_search:
+                Intent search = new Intent(this, SearchActivity.class);
+                startActivity(search);
+                return true;
+            case R.id.action_notifications:
+                return true;
+            case R.id.action_help:
+                return true;
+            case R.id.action_about:
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

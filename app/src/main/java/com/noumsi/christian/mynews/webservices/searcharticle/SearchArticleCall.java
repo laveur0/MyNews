@@ -21,10 +21,11 @@ public class SearchArticleCall {
         void onFailure();
     }
 
-    public static void fetchSearchArticle(Callbacks callbacks, String q, String fq, String apiKey) {
+    public static void fetchSearchArticle(Callbacks callbacks, String q, String fq, String beginDate, String endDate, String apiKey) {
         final WeakReference<Callbacks> callbacksWeakReference = new WeakReference<>(callbacks);
         NYTService service = NYTService.retrofit.create(NYTService.class);
-        Call<Search> searchCall = service.searchArticle(q, fq, apiKey);
+
+        Call<Search> searchCall = service.searchArticle(q, fq, beginDate, endDate, apiKey);
         searchCall.enqueue(new Callback<Search>() {
             @Override
             public void onResponse(Call<Search> call, Response<Search> response) {

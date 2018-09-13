@@ -76,7 +76,7 @@ public class MostPopularFragment extends Fragment implements MostPopularCall.Cal
 
     private void configureRecyclerView() {
         // we create new adapter
-        mPopularAdapter = new PopularAdapter(mMostPopular, Glide.with(this));
+        mPopularAdapter = new PopularAdapter(mMostPopular);
         // we attach adapter to recycler view
         mRecyclerView.setAdapter(mPopularAdapter);
         // we set layout manager
