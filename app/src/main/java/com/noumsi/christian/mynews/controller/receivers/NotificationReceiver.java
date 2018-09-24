@@ -1,0 +1,122 @@
+package com.noumsi.christian.mynews.controller.receivers;
+
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+
+import com.noumsi.christian.mynews.R;
+import com.noumsi.christian.mynews.controller.activities.SearchResultActivity;
+import com.noumsi.christian.mynews.webservices.searcharticle.Search;
+import com.noumsi.christian.mynews.webservices.searcharticle.SearchArticleCall;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_BEGIN_DATE;
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_END_DATE;
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_FQ;
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_QUERY_TERM;
+
+public class NotificationReceiver extends BroadcastReceiver implements SearchArticleCall.Callbacks{
+
+    String mQueryTerm, mBeginDate, mEndDate, mFQ;
+    private SimpleDateFormat mSimpleDateFormat;
+    private static final String TAG = "NotificationReceiver";
+    private String MY_CHANNEL = "my_news";
+    Context mContext;
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+
+        mContext = context;
+        // We set date format
+        mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+
+        if (intent != null) {
+            // We get extra in intent
+            mQueryTerm = intent.getExtras().getString(EXTRA_QUERY_TERM);
+            mBeginDate = intent.getExtras().getString(EXTRA_BEGIN_DATE);
+            mFQ = intent.getExtras().getString(EXTRA_FQ);
+
+            // We execute http request
+            this.executeHTTPRequestWithRetrofit();
+        }
+    }
+
+    private void executeHTTPRequestWithRetrofit() {
+        /* We convert format date for research */
+        String beginDate = null;
+
+        try {
+            beginDate = mSimpleDateFormat.format(new SimpleDateFormat("dd/MM/yyyy", Locale.US).parse(mBeginDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        SearchArticleCall.fetchSearchArticle(this, mQueryTerm, mFQ, beginDate, null, mContext.getString(R.string.api_key_nyt));
+    }
+
+    @Override
+    public void onResponse(@Nullable Search search) {
+        Log.d(TAG, "Success");
+        if (search != null) {
+            if (search.getResponse().getDocs().size() > 0) {
+                showNotification();
+            }
+        }
+    }
+
+    private void showNotification() {
+        NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Intent searchResult = new Intent(mContext, SearchResultActivity.class);
+        searchResult.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        searchResult.putExtra(EXTRA_QUERY_TERM, mQueryTerm);
+        searchResult.putExtra(EXTRA_BEGIN_DATE, mBeginDate);
+        searchResult.putExtra(EXTRA_END_DATE, "");
+        searchResult.putExtra(EXTRA_FQ, mFQ);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 100, searchResult, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // We create channel
+            assert notificationManager != null;
+            createChannel(notificationManager);
+        }
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, MY_CHANNEL)
+                .setContentIntent(pendingIntent)
+                .setSmallIcon(R.drawable.ic_arrow_drop_down_black_24dp)
+                .setContentTitle("My News")
+                .setContentText("News from New York Times")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+
+        assert notificationManager != null;
+        notificationManager.notify(100, builder.build());
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void createChannel(NotificationManager notificationManager) {
+        NotificationChannel myChannel = new NotificationChannel(
+                        MY_CHANNEL,
+                        mContext.getString(R.string.title_activity_main),
+                        NotificationManager.IMPORTANCE_DEFAULT);
+
+        notificationManager.createNotificationChannel(myChannel);
+    }
+
+    @Override
+    public void onFailure() {
+
+    }
+}

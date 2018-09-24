@@ -2,12 +2,14 @@ package com.noumsi.christian.mynews.controller.activities;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -25,6 +27,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_BEGIN_DATE;
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_CHECKBOX_ART;
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_CHECKBOX_BUSINESS;
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_CHECKBOX_ENTREPRENEURS;
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_CHECKBOX_POLITIC;
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_CHECKBOX_SPORT;
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_CHECKBOX_TRAVEL;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_END_DATE;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_FQ;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_QUERY_TERM;
@@ -45,12 +53,16 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     private DatePickerDialog.OnDateSetListener mDateSetListenerForBeginDate, mDateSetListenerForEndDate;
     private SimpleDateFormat simpleDateFormat;
     private static final String TAG = "SearchActivity";
+    private SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
+
+        // We initialise sharePreferences
+        mSharedPreferences = getPreferences(MODE_PRIVATE);
 
         // we set title of toolbar
         setTitle(getString(R.string.title_search_activity));
@@ -82,6 +94,59 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
 
         // set on click listener on search button
         mButtonSearch.setOnClickListener(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // We load saved preferences
+        this.loadSavedPreferences();
+
+        // After loading preferences, we configure search button
+        this.configureSearchButton();
+    }
+
+    @Override
+    protected void onStop() {
+        // We save preferences of user
+        this.savePreferences();
+        super.onStop();
+    }
+
+    /**
+     * Method to save state of widgets in share preferences
+     */
+    private void savePreferences() {
+        // query term
+        mSharedPreferences.edit().putString(EXTRA_QUERY_TERM, mEditTextQuery.getText().toString()).apply();
+        // dates
+        mSharedPreferences.edit().putString(EXTRA_BEGIN_DATE, mEditTextDateStart.getText().toString()).apply();
+        mSharedPreferences.edit().putString(EXTRA_END_DATE, mEditTextDateEnd.getText().toString()).apply();
+        // state of checkbox
+        mSharedPreferences.edit().putBoolean(EXTRA_CHECKBOX_BUSINESS, mCheckBoxBusinessCat.isChecked()).apply();
+        mSharedPreferences.edit().putBoolean(EXTRA_CHECKBOX_ENTREPRENEURS, mCheckBoxEntrepreneursCat.isChecked()).apply();
+        mSharedPreferences.edit().putBoolean(EXTRA_CHECKBOX_POLITIC, mCheckBoxPoliticsCat.isChecked()).apply();
+        mSharedPreferences.edit().putBoolean(EXTRA_CHECKBOX_SPORT, mCheckBoxSportsCat.isChecked()).apply();
+        mSharedPreferences.edit().putBoolean(EXTRA_CHECKBOX_TRAVEL, mCheckBoxTravelCat.isChecked()).apply();
+        mSharedPreferences.edit().putBoolean(EXTRA_CHECKBOX_ART, mCheckBoxArtsCat.isChecked()).apply();
+    }
+
+    /**
+     * Method to load widgets state of share preferences
+     */
+    private void loadSavedPreferences() {
+        // query term
+        mEditTextQuery.setText(mSharedPreferences.getString(EXTRA_QUERY_TERM, null));
+        // dates
+        mEditTextDateStart.setText(mSharedPreferences.getString(EXTRA_BEGIN_DATE, null));
+        mEditTextDateEnd.setText(mSharedPreferences.getString(EXTRA_END_DATE, null));
+        // state of checkbox
+        mCheckBoxArtsCat.setChecked(mSharedPreferences.getBoolean(EXTRA_CHECKBOX_ART, false));
+        mCheckBoxBusinessCat.setChecked(mSharedPreferences.getBoolean(EXTRA_CHECKBOX_BUSINESS, false));
+        mCheckBoxEntrepreneursCat.setChecked(mSharedPreferences.getBoolean(EXTRA_CHECKBOX_ENTREPRENEURS, false));
+        mCheckBoxPoliticsCat.setChecked(mSharedPreferences.getBoolean(EXTRA_CHECKBOX_POLITIC, false));
+        mCheckBoxSportsCat.setChecked(mSharedPreferences.getBoolean(EXTRA_CHECKBOX_SPORT, false));
+        mCheckBoxTravelCat.setChecked(mSharedPreferences.getBoolean(EXTRA_CHECKBOX_TRAVEL, false));
     }
 
     // We configure listener for DatePickerDialog
@@ -164,6 +229,9 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         return fq;
     }
 
+    /**
+     * Method to change state of search button (enable or disable
+     */
     private void configureSearchButton() {
         if (checkBoxAreChecked()) {
             Editable editable = mEditTextQuery.getText();
@@ -180,6 +248,10 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    /**
+     * Method to listening click on edit text and show date picker
+     * @param beginDate First date to show in date picker
+     */
     private void configureDateEditText(boolean beginDate) {
         Calendar calendar = Calendar.getInstance();
         int days = calendar.get(Calendar.DAY_OF_MONTH);
@@ -209,6 +281,10 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         dialog.show();
     }
 
+    /**
+     * To check if a checkbox are selected
+     * @return
+     */
     private boolean checkBoxAreChecked() {
         if (mCheckBoxTravelCat.isChecked()) return true;
         else if (mCheckBoxSportsCat.isChecked()) return true;
