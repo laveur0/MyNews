@@ -42,10 +42,19 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
         return mSearch != null ? mSearch.getResponse().getDocs().size() : 0;
     }
 
+    /**
+     * Method to initialize search variable after search
+     * @param search Articles result
+     */
     public void setSearch(Search search) {
         mSearch = search;
     }
 
+    /**
+     * We get article at docs level of json file in article result
+     * @param position index of article to return
+     * @return
+     */
     public SearchArticleDoc getArticle(int position) {
         return mSearch.getResponse().getDocs().get(position);
     }

@@ -2,17 +2,13 @@ package com.noumsi.christian.mynews.controller.activities;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
@@ -27,33 +23,19 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_BEGIN_DATE;
-import static com.noumsi.christian.mynews.utils.Constants.EXTRA_CHECKBOX_ART;
-import static com.noumsi.christian.mynews.utils.Constants.EXTRA_CHECKBOX_BUSINESS;
-import static com.noumsi.christian.mynews.utils.Constants.EXTRA_CHECKBOX_ENTREPRENEURS;
-import static com.noumsi.christian.mynews.utils.Constants.EXTRA_CHECKBOX_POLITIC;
-import static com.noumsi.christian.mynews.utils.Constants.EXTRA_CHECKBOX_SPORT;
-import static com.noumsi.christian.mynews.utils.Constants.EXTRA_CHECKBOX_TRAVEL;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_END_DATE;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_FQ;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_QUERY_TERM;
 
-public class SearchActivity extends AppCompatActivity implements View.OnClickListener, TextWatcher {
+public class SearchActivity extends ParentSearch implements View.OnClickListener, TextWatcher {
 
-    @BindView(R.id.search_widget_edit_text_query) EditText mEditTextQuery;
     @BindView(R.id.search_widget_edit_text_date_start) EditText mEditTextDateStart;
     @BindView(R.id.search_widget_edit_text_date_end) EditText mEditTextDateEnd;
-    @BindView(R.id.search_widget_arts_cat) CheckBox mCheckBoxArtsCat;
-    @BindView(R.id.search_widget_business_cat) CheckBox mCheckBoxBusinessCat;
-    @BindView(R.id.search_widget_entrepreneurs_cat) CheckBox mCheckBoxEntrepreneursCat;
-    @BindView(R.id.search_widget_politics_cat) CheckBox mCheckBoxPoliticsCat;
-    @BindView(R.id.search_widget_sports_cat) CheckBox mCheckBoxSportsCat;
-    @BindView(R.id.search_widget_travel_cat) CheckBox mCheckBoxTravelCat;
     @BindView(R.id.activity_search_search_button) Button mButtonSearch;
 
     private DatePickerDialog.OnDateSetListener mDateSetListenerForBeginDate, mDateSetListenerForEndDate;
     private SimpleDateFormat simpleDateFormat;
     private static final String TAG = "SearchActivity";
-    private SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +44,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         ButterKnife.bind(this);
 
         // We initialise sharePreferences
-        mSharedPreferences = getPreferences(MODE_PRIVATE);
+        super.initPreferences(TAG);
 
         // we set title of toolbar
         setTitle(getString(R.string.title_search_activity));
@@ -116,37 +98,21 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     /**
      * Method to save state of widgets in share preferences
      */
-    private void savePreferences() {
-        // query term
-        mSharedPreferences.edit().putString(EXTRA_QUERY_TERM, mEditTextQuery.getText().toString()).apply();
+    protected void savePreferences() {
+        super.savePreferences();
         // dates
         mSharedPreferences.edit().putString(EXTRA_BEGIN_DATE, mEditTextDateStart.getText().toString()).apply();
         mSharedPreferences.edit().putString(EXTRA_END_DATE, mEditTextDateEnd.getText().toString()).apply();
-        // state of checkbox
-        mSharedPreferences.edit().putBoolean(EXTRA_CHECKBOX_BUSINESS, mCheckBoxBusinessCat.isChecked()).apply();
-        mSharedPreferences.edit().putBoolean(EXTRA_CHECKBOX_ENTREPRENEURS, mCheckBoxEntrepreneursCat.isChecked()).apply();
-        mSharedPreferences.edit().putBoolean(EXTRA_CHECKBOX_POLITIC, mCheckBoxPoliticsCat.isChecked()).apply();
-        mSharedPreferences.edit().putBoolean(EXTRA_CHECKBOX_SPORT, mCheckBoxSportsCat.isChecked()).apply();
-        mSharedPreferences.edit().putBoolean(EXTRA_CHECKBOX_TRAVEL, mCheckBoxTravelCat.isChecked()).apply();
-        mSharedPreferences.edit().putBoolean(EXTRA_CHECKBOX_ART, mCheckBoxArtsCat.isChecked()).apply();
     }
 
     /**
      * Method to load widgets state of share preferences
      */
-    private void loadSavedPreferences() {
-        // query term
-        mEditTextQuery.setText(mSharedPreferences.getString(EXTRA_QUERY_TERM, null));
+    protected void loadSavedPreferences() {
+        super.loadSavedPreferences();
         // dates
         mEditTextDateStart.setText(mSharedPreferences.getString(EXTRA_BEGIN_DATE, null));
         mEditTextDateEnd.setText(mSharedPreferences.getString(EXTRA_END_DATE, null));
-        // state of checkbox
-        mCheckBoxArtsCat.setChecked(mSharedPreferences.getBoolean(EXTRA_CHECKBOX_ART, false));
-        mCheckBoxBusinessCat.setChecked(mSharedPreferences.getBoolean(EXTRA_CHECKBOX_BUSINESS, false));
-        mCheckBoxEntrepreneursCat.setChecked(mSharedPreferences.getBoolean(EXTRA_CHECKBOX_ENTREPRENEURS, false));
-        mCheckBoxPoliticsCat.setChecked(mSharedPreferences.getBoolean(EXTRA_CHECKBOX_POLITIC, false));
-        mCheckBoxSportsCat.setChecked(mSharedPreferences.getBoolean(EXTRA_CHECKBOX_SPORT, false));
-        mCheckBoxTravelCat.setChecked(mSharedPreferences.getBoolean(EXTRA_CHECKBOX_TRAVEL, false));
     }
 
     // We configure listener for DatePickerDialog
@@ -210,25 +176,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    // We get text of all checked Checkbox who fq parameter in Search API on NYT
-    private String getFQ() {
-        String fq = "news_desk:(";
-        if (mCheckBoxTravelCat.isChecked())
-            fq += "\"Travel\" ";
-        if (mCheckBoxSportsCat.isChecked())
-            fq += "\"Sports\" ";
-        if (mCheckBoxPoliticsCat.isChecked())
-            fq += "\"Politics\" ";
-        if (mCheckBoxEntrepreneursCat.isChecked())
-            fq += "\"Entrepreneurs\" ";
-        if (mCheckBoxBusinessCat.isChecked())
-            fq += "\"Business\" ";
-        if (mCheckBoxArtsCat.isChecked())
-            fq += "\"Arts\"";
-        fq += ")";
-        return fq;
-    }
-
     /**
      * Method to change state of search button (enable or disable
      */
@@ -279,20 +226,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         }
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
-    }
-
-    /**
-     * To check if a checkbox are selected
-     * @return
-     */
-    private boolean checkBoxAreChecked() {
-        if (mCheckBoxTravelCat.isChecked()) return true;
-        else if (mCheckBoxSportsCat.isChecked()) return true;
-        else if (mCheckBoxPoliticsCat.isChecked()) return true;
-        else if (mCheckBoxEntrepreneursCat.isChecked()) return true;
-        else if (mCheckBoxBusinessCat.isChecked()) return true;
-        else if (mCheckBoxArtsCat.isChecked()) return true;
-        else return false;
     }
 
     @Override

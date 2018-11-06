@@ -1,12 +1,10 @@
 package com.noumsi.christian.mynews.views;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.noumsi.christian.mynews.GlideApp;
 import com.noumsi.christian.mynews.R;

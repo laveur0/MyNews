@@ -1,14 +1,11 @@
 package com.noumsi.christian.mynews.controller.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.webkit.WebView;
 
 import com.noumsi.christian.mynews.R;
-
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,13 +27,13 @@ public class ArticleContainerActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         // We get parameters passed in bundle
-        getParametersInBundle();
+        if (getParametersInBundle()) {
+            // We set title to Tool bar
+            this.configureToolBar();
 
-        // We set title to Tool bar
-        this.configureToolBar();
-
-        // We load this url in web view
-        this.configureWebView();
+            // We load this url in web view
+            this.configureWebView();
+        }
     }
 
     @Override
@@ -57,9 +54,13 @@ public class ArticleContainerActivity extends AppCompatActivity {
         mWebView.loadUrl(mUrlArticle);
     }
 
-    private void getParametersInBundle() {
+    protected boolean getParametersInBundle() {
         Bundle extras = getIntent().getExtras();
         mUrlArticle = extras.getString(EXTRA_URL_ARTICLE, "");
         mTitleArticle = extras.getString(EXTRA_TITLE_ARTICLE, "");
+        if (mUrlArticle.isEmpty())
+            return false;
+        else
+            return true;
     }
 }

@@ -22,7 +22,7 @@ public interface NYTService {
     @GET("svc/topstories/v2/home.json")
     Call<TopStories> topStories(@Query("api-key") String apiKey);
 
-    @GET("svc/mostpopular/v2/mostviewed/{section}/1.json")
+    @GET("svc/mostpopular/v2/mostviewed/{section}/30.json")
     Call<MostPopular> mostPopular(@Path("section") String section, @Query("api-key") String apiKey);
 
     Retrofit retrofit = new Retrofit.Builder()
