@@ -39,7 +39,6 @@ android:
  - google-gdk-license-.+
 
 before_install:
-- openssl aes-256-cbc -K $encrypted_c0801aa05af4_key -iv $encrypted_c0801aa05af4_iv -in example_keystore.jks.enc -out example_keystore.jks -d
 - mkdir "$ANDROID_HOME/licenses" || true
 - echo -e "\n8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license"
 - echo -e "\n84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
@@ -55,24 +54,3 @@ before_script:
 
 script:
 - "./gradlew clean build connectedCheck -PdisablePreDex --stacktrace"
-
-before_deploy:
-- cp $TRAVIS_BUILD_DIR/example_keystore.jks $HOME
-- cd app/build/outputs/apk/
-- jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $HOME/example_keystore.jks -storepass $storepass -keypass $keypass app-release-unsigned.apk ExampleKeystoreAlias
-
-# Verification
-- jarsigner -verify app-release-unsigned.apk
-- "${ANDROID_HOME}/build-tools/28.0.0/zipalign -v 4 app-release-unsigned.apk MyNews.apk"
-
-deploy:
-  provider: releases
-  file: MyNews.apk
-  skip_cleanup: true
-
-  on:
-    repo: laveur0/MyNews
-    tags: true
-    jdk: oraclejdk8
-  api_key:
-    secure: ""
