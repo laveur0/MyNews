@@ -14,7 +14,6 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.noumsi.christian.mynews.R;
-import com.noumsi.christian.mynews.controller.activities.SearchResultActivity;
 import com.noumsi.christian.mynews.webservices.searcharticle.Search;
 import com.noumsi.christian.mynews.webservices.searcharticle.SearchArticleCall;
 
@@ -25,8 +24,8 @@ import java.util.Date;
 import java.util.Locale;
 
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_BEGIN_DATE;
-import static com.noumsi.christian.mynews.utils.Constants.EXTRA_END_DATE;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_FQ;
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_NAME_ACTIVITY;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_QUERY_TERM;
 
 public class NotificationReceiver extends BroadcastReceiver implements SearchArticleCall.Callbacks{
@@ -34,7 +33,7 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
     String mQueryTerm, mBeginDate, mEndDate, mFQ;
     private SimpleDateFormat mSimpleDateFormat;
     private static final String TAG = "NotificationReceiver";
-    private String MY_CHANNEL = "my_news", namePreferences = "NotificationActivity";
+    private String MY_CHANNEL = "my_news", mNamePreferences;
     Context mContext;
     Intent mIntent;
     protected SharedPreferences mSharedPreferences;
@@ -42,16 +41,17 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        mSharedPreferences = context.getSharedPreferences(namePreferences, Context.MODE_PRIVATE);
+        Log.d(TAG, "onReceive: start");
         mContext = context;
         mIntent = intent;
 
         // We set date format
-        mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        mSimpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.US);
 
         if (intent != null) {
             // We get extra in intent
             this.loadIntentExtras(intent);
+            mSharedPreferences = context.getSharedPreferences(mNamePreferences, Context.MODE_PRIVATE);
             // We execute http request
             this.executeHTTPRequestWithRetrofit();
         }
@@ -61,6 +61,7 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
         mQueryTerm = intent.getExtras().getString(EXTRA_QUERY_TERM);
         mBeginDate = intent.getExtras().getString(EXTRA_BEGIN_DATE);
         mFQ = intent.getExtras().getString(EXTRA_FQ);
+        mNamePreferences = intent.getExtras().getString(EXTRA_NAME_ACTIVITY);
     }
 
     private void executeHTTPRequestWithRetrofit() {
@@ -85,7 +86,8 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
                 // We set new begin date for research
                 this.modifyDateOfResearch();
             }
-        }
+        } else
+            Log.d(TAG, "onResponse: result is null");
     }
 
     /**
@@ -93,6 +95,7 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
      */
     private void modifyDateOfResearch() {
         try {
+            PendingIntent pendingIntent;
             Date date = new SimpleDateFormat("dd/MM/yyyy", Locale.US).parse(mBeginDate);
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
@@ -105,7 +108,7 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
 
             // modify the pending intent
             mIntent.putExtra(EXTRA_BEGIN_DATE, dateToString);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, 100, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            pendingIntent = PendingIntent.getBroadcast(mContext, 100, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             // We save new date in preference for new alarm when we restart phone
             mSharedPreferences.edit().putString(EXTRA_BEGIN_DATE, dateToString).apply();
@@ -122,17 +125,6 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
     private void showNotification(int numberOfArticle) {
         NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        /*
-        Intent searchResult = new Intent(mContext, SearchResultActivity.class);
-        searchResult.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        searchResult.putExtra(EXTRA_QUERY_TERM, mQueryTerm);
-        searchResult.putExtra(EXTRA_BEGIN_DATE, mBeginDate);
-        searchResult.putExtra(EXTRA_END_DATE, "");
-        searchResult.putExtra(EXTRA_FQ, mFQ);
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 100, searchResult, PendingIntent.FLAG_UPDATE_CURRENT);
-        */
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // We create channel
             assert notificationManager != null;
@@ -140,10 +132,9 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
         }
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, MY_CHANNEL)
-                //.setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.ic_arrow_drop_down_black_24dp)
-                .setContentTitle("My News")
-                .setContentText(numberOfArticle + " items found")
+                .setContentTitle(mContext.getString(R.string.notification_title))
+                .setContentText(numberOfArticle + " " + mContext.getString(R.string.notification_content_text))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
 

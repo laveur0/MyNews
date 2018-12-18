@@ -42,7 +42,7 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularViewHolder> {
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, String.valueOf(mMostPopular != null ? mMostPopular.getResults().size() : 0));
+        Log.d(TAG, "getItemCount: " + String.valueOf(mMostPopular != null ? mMostPopular.getResults().size() : 0));
         return mMostPopular != null ? mMostPopular.getResults().size() : 0;
     }
 

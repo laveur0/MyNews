@@ -1,30 +1,20 @@
 package com.noumsi.christian.mynews.controller.activities;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import com.noumsi.christian.mynews.R;
-import com.noumsi.christian.mynews.controller.receivers.NotificationReceiver;
-
-import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.noumsi.christian.mynews.utils.Constants.EXTRA_BEGIN_DATE;
-import static com.noumsi.christian.mynews.utils.Constants.EXTRA_FQ;
-import static com.noumsi.christian.mynews.utils.Constants.EXTRA_QUERY_TERM;
-import static com.noumsi.christian.mynews.utils.Constants.EXTRA_SWITCH_STATE;
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_NOTIFICATION_STATE;
 
 public class NotificationActivity extends ParentSearch implements View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener{
 
@@ -32,11 +22,8 @@ public class NotificationActivity extends ParentSearch implements View.OnClickLi
     @BindView(R.id.search_widget_edit_text_date_end) EditText mEditTextDateEnd;
     @BindView(R.id.search_widget_begin_date_tv) TextView mTextViewBeginDate;
     @BindView(R.id.search_widget_end_date_tv) TextView mTextViewEndDate;
-    @BindView(R.id.activity_notification_switch) Switch mSwitch;
 
-    AlarmManager alarmManager;
     private static final String TAG = "NotificationActivity";
-    private boolean mStatusSwitchWidget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +33,6 @@ public class NotificationActivity extends ParentSearch implements View.OnClickLi
 
         // We initialise sharePreferences
         super.initPreferences(TAG);
-
-        // We create an Alarm Manager
-        alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         // we set text changed listener on query editText
         mEditTextQuery.addTextChangedListener(this);
@@ -79,36 +63,18 @@ public class NotificationActivity extends ParentSearch implements View.OnClickLi
         super.onResume();
 
         // We load saved preferences
-        this.loadSavedPreferences();
+        loadSavedPreferences();
 
         // After loading preferences, we configure switch button
-        this.configureSwitchWidget();
+        configureSwitchWidget();
     }
 
-    /**
-     * In this method, we save in preferences state of all widgets
-     */
-    protected void loadSavedPreferences() {
-        super.loadSavedPreferences();
-        // state of switch widget
-        mStatusSwitchWidget = mSharedPreferences.getBoolean(EXTRA_SWITCH_STATE, false);
-        mSwitch.setChecked(mStatusSwitchWidget);
-    }
 
     @Override
     protected void onStop() {
         // We save widgets state in preferences
         this.savePreferences();
         super.onStop();
-    }
-
-    /**
-     * Method to save state of widgets in share preferences
-     */
-    protected void savePreferences() {
-        super.savePreferences();
-        // state of switch button
-        mSharedPreferences.edit().putBoolean(EXTRA_SWITCH_STATE, mSwitch.isChecked()).apply();
     }
 
     @Override
@@ -136,38 +102,11 @@ public class NotificationActivity extends ParentSearch implements View.OnClickLi
         }
     }
 
-    /**
-     * In this method we enable or disable switch widget
-     * If no checkbox checked, we also uncheck switch widget
-     */
-    private void configureSwitchWidget() {
-        if (checkBoxAreChecked()) {
-            Editable editable = mEditTextQuery.getText();
-            if (editable != null) {
-                String text = editable.toString();
-                if (!text.isEmpty()) {
-                    mSwitch.setEnabled(true);
-                }
-            }
-        } else {
-            // we change state checked of switch to false
-            mSwitch.setChecked(false);
-            // We disable switch button
-            mSwitch.setEnabled(false);
-            // We remove alarm manager
-            this.removeAlarmManager();
-        }
-    }
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
     @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-    }
-
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-    }
+    public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
     @Override
     public void afterTextChanged(Editable s) {
@@ -185,65 +124,29 @@ public class NotificationActivity extends ParentSearch implements View.OnClickLi
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (isChecked) {
-            if (!mStatusSwitchWidget) {
+            if (!mNotificationState) {
+                if (this.notificationStateInSearchActivity()) {
+                    this.removeAlarmManager(100);
+                    // we disable state of notification in SearchActivity
+                    this.disableNotificationInSearchActivity();
+                }
                 // We configure broadcast receiver with alarm manager
-                configureNotificationBroadcast();
+                this.configureNotificationBroadcast(01, 00, 00, 100);
             }
         } else {
             // We remove alarm manager
-            this.removeAlarmManager();
+            this.removeAlarmManager(100);
+            mNotificationState = false;
         }
     }
 
-    // Method to remove register alarm manager
-    private void removeAlarmManager() {
-        Intent receiver = new Intent(getApplicationContext(), NotificationReceiver.class);
-        PendingIntent pendingIntentReceiver = PendingIntent.getBroadcast(getApplicationContext(), 100, receiver, PendingIntent.FLAG_UPDATE_CURRENT);
-        try {
-            alarmManager.cancel(pendingIntentReceiver);
-            pendingIntentReceiver.cancel();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        mStatusSwitchWidget = false;
-        Log.d(TAG, "removeAlarmManager: alarmManager disable");
+    private boolean notificationStateInSearchActivity() {
+        SharedPreferences preferences = getSharedPreferences("SearchActivity", MODE_PRIVATE);
+        return preferences.getBoolean(EXTRA_NOTIFICATION_STATE, false);
     }
 
-    /**
-     * We set an Alarm Manager and pending Intent to broadcast receiver
-     */
-    private void configureNotificationBroadcast() {
-        // We set time
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 01);
-        calendar.set(Calendar.MINUTE, 00);
-        calendar.set(Calendar.SECOND, 00);
-        calendar.set(Calendar.AM_PM, Calendar.PM);
-        Log.d(TAG, "configureNotificationBroadcast:"+calendar.getTime().toString());
-
-        // We create intent to notification receiver
-        Intent receiver = new Intent(getApplicationContext(), NotificationReceiver.class);
-        receiver.putExtra(EXTRA_QUERY_TERM, mEditTextQuery.getText().toString());
-        // we construct fq of search service and send to intent
-        receiver.putExtra(EXTRA_FQ, getFQ());
-        // We get date in dd/MM/yyyy format
-        String date = calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR);
-        receiver.putExtra(EXTRA_BEGIN_DATE, date);
-
-        // We initialize pending intent to receiver
-        PendingIntent pendingIntentReceiver = PendingIntent.getBroadcast(getApplicationContext(), 100, receiver, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        // We configure Alarm Manager
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntentReceiver);
-        Log.d(TAG, "configureNotificationBroadcast: alarmManager enable");
-
-        // we save parameters for reload alarm
-        this.saveExtratOfReceiverInPreferences(date, getFQ());
-    }
-
-    private void saveExtratOfReceiverInPreferences(String beginDate, String fq) {
-        mSharedPreferences.edit().putString(EXTRA_BEGIN_DATE, beginDate).apply();
-        mSharedPreferences.edit().putString(EXTRA_FQ, fq).apply();
+    private void disableNotificationInSearchActivity() {
+        SharedPreferences preferences = getSharedPreferences("SearchActivity", MODE_PRIVATE);
+        preferences.edit().putBoolean(EXTRA_NOTIFICATION_STATE, false).apply();
     }
 }

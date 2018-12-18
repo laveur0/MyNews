@@ -105,9 +105,7 @@ public class BusinessFragment extends Fragment implements SearchArticleCall.Call
         SearchArticleCall.fetchSearchArticle(this, "", "news_desk:(\"Business\")", null, null, getString(R.string.api_key_nyt));
     }
 
-    private void updateUIWhenStartingHTTPRequest() {
-
-    }
+    private void updateUIWhenStartingHTTPRequest() { }
 
     private void configureSwipeRefreshLayout() {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -137,7 +135,5 @@ public class BusinessFragment extends Fragment implements SearchArticleCall.Call
         this.updateUIWhenStoppingHTTPRequest("An error happened");
     }
 
-    private void updateUIWhenStoppingHTTPRequest(String message) {
-
-    }
+    private void updateUIWhenStoppingHTTPRequest(String message) { }
 }

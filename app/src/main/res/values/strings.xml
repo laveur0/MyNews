@@ -24,4 +24,7 @@
     <string name="activity_search_end_date">End Date</string>
     <string name="no_result_found">No result found.</string>
     <string name="enable_notifications">Enable notifications (once per day)</string>
+    <string name="save_the_status_of_a_search_to_be_notified">Save the status of a search to be notified</string>
+    <string name="notification_title">My News</string>
+    <string name="notification_content_text">items found</string>
 </resources>

@@ -2,6 +2,7 @@ package com.noumsi.christian.mynews.controller.activities;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
@@ -25,9 +27,10 @@ import butterknife.ButterKnife;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_BEGIN_DATE;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_END_DATE;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_FQ;
+import static com.noumsi.christian.mynews.utils.Constants.EXTRA_NOTIFICATION_STATE;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_QUERY_TERM;
 
-public class SearchActivity extends ParentSearch implements View.OnClickListener, TextWatcher {
+public class SearchActivity extends ParentSearch implements View.OnClickListener, TextWatcher, CompoundButton.OnCheckedChangeListener {
 
     @BindView(R.id.search_widget_edit_text_date_start) EditText mEditTextDateStart;
     @BindView(R.id.search_widget_edit_text_date_end) EditText mEditTextDateEnd;
@@ -63,6 +66,9 @@ public class SearchActivity extends ParentSearch implements View.OnClickListener
         mEditTextDateStart.setKeyListener(null);
         mEditTextDateEnd.setKeyListener(null);
 
+        // We disable switch widget
+        mSwitch.setEnabled(false);
+
         // Configure datapickerdialog for datasetlistener
         configureDataSetListener();
 
@@ -74,6 +80,9 @@ public class SearchActivity extends ParentSearch implements View.OnClickListener
         mCheckBoxSportsCat.setOnClickListener(this);
         mCheckBoxTravelCat.setOnClickListener(this);
 
+        // We listen changing of switch
+        mSwitch.setOnCheckedChangeListener(this);
+
         // set on click listener on search button
         mButtonSearch.setOnClickListener(this);
     }
@@ -84,8 +93,9 @@ public class SearchActivity extends ParentSearch implements View.OnClickListener
         // We load saved preferences
         this.loadSavedPreferences();
 
-        // After loading preferences, we configure search button
+        // After loading preferences, we configure search and switch button
         this.configureSearchButton();
+        configureSwitchWidget();
     }
 
     @Override
@@ -157,21 +167,27 @@ public class SearchActivity extends ParentSearch implements View.OnClickListener
             case R.id.search_widget_arts_cat:
                 // We configure search button depending of selection of checkbox and query in edit text
                 configureSearchButton();
+                configureSwitchWidget();
                 break;
             case R.id.search_widget_business_cat:
                 configureSearchButton();
+                configureSwitchWidget();
                 break;
             case R.id.search_widget_entrepreneurs_cat:
                 configureSearchButton();
+                configureSwitchWidget();
                 break;
             case R.id.search_widget_politics_cat:
                 configureSearchButton();
+                configureSwitchWidget();
                 break;
             case R.id.search_widget_sports_cat:
                 configureSearchButton();
+                configureSwitchWidget();
                 break;
             case R.id.search_widget_travel_cat:
                 configureSearchButton();
+                configureSwitchWidget();
                 break;
         }
     }
@@ -241,8 +257,45 @@ public class SearchActivity extends ParentSearch implements View.OnClickListener
     @Override
     public void afterTextChanged(Editable s) {
         if (s.length() > 0) {
-            if (checkBoxAreChecked())
+            if (checkBoxAreChecked()) {
                 mButtonSearch.setEnabled(true);
-        } else mButtonSearch.setEnabled(false);
+                mSwitch.setEnabled(true);
+            }
+        } else {
+            mButtonSearch.setEnabled(false);
+            // we change state checked of switch to false
+            mSwitch.setChecked(false);
+            // We disable switch button
+            mSwitch.setEnabled(false);
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+            if (!mNotificationState) {
+                if (this.notificationStateInNotificationActivity()) {
+                    this.removeAlarmManager(100);
+                    // we disable state of notification in NotificationActivity
+                    this.disableNotificationInNotificationActivity();
+                }
+                // We configure broadcast receiver with alarm manager
+                this.configureNotificationBroadcast(01, 00, 00, 100);
+            }
+        } else {
+            // We remove alarm manager
+            this.removeAlarmManager(100);
+            mNotificationState = false;
+        }
+    }
+
+    private boolean notificationStateInNotificationActivity() {
+        SharedPreferences preferences = getSharedPreferences("NotificationActivity", MODE_PRIVATE);
+        return preferences.getBoolean(EXTRA_NOTIFICATION_STATE, false);
+    }
+
+    private void disableNotificationInNotificationActivity() {
+        SharedPreferences preferences = getSharedPreferences("NotificationActivity", MODE_PRIVATE);
+        preferences.edit().putBoolean(EXTRA_NOTIFICATION_STATE, false).apply();
     }
 }

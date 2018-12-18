@@ -9,17 +9,4 @@
 
     <include layout="@layout/search_widget"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/black"
-        android:alpha="0.12"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"/>
-
-    <Switch
-        android:id="@+id/activity_notification_switch"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/enable_notifications" />
 </LinearLayout>

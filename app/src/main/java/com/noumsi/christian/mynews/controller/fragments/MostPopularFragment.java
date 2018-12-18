@@ -119,7 +119,9 @@ public class MostPopularFragment extends Fragment implements MostPopularCall.Cal
     @Override
     public void onResponse(@Nullable MostPopular mostPopular) {
         Log.d(TAG, "Success");
-        if (mostPopular != null) this.updateUIWithMostPopular(mostPopular);
+        if (mostPopular != null) {
+            this.updateUIWithMostPopular(mostPopular);
+        }
     }
 
     private void updateUIWithMostPopular(MostPopular mostPopular) {
