@@ -52,7 +52,6 @@ public class BusinessFragment extends Fragment implements SearchArticleCall.Call
      *
      * @return A new instance of fragment BusinessFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static BusinessFragment newInstance() {
         return new BusinessFragment();
     }
