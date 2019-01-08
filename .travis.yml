@@ -47,8 +47,8 @@ before_install:
 before_script:
 #- android list targets
 - android list target
-#- echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
-- echo no | android create avd --force -n test --package "system-images;android-$EMULATOR_API_LEVEL;google_apis;x86"
+- echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
+#- echo no | android create avd --force -n test --package "system-images;android-$EMULATOR_API_LEVEL;google_apis;x86"
 # export ANDROID_HOME=/Users/christian-noumsi/Library/Android/sdk/tools:/Users/christian-noumsi/Library/Android/sdk/platform-tools
 - emulator -avd test -no-skin -no-audio -no-window &
 - android-wait-for-emulator
