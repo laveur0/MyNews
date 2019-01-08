@@ -16,7 +16,7 @@ env:
  - ANDROID_API=28
  - EMULATOR_API=28
  - EMULATOR_API_LEVEL=22
- - ANDROID_ABI=armeabi-v7a
+ - ANDROID_ABI="armeabi-v7a"
  - ANDROID_TAG=google_apis
  - ANDROID_BUILD_TOOLS=28.0.0
  - ADB_INSTALL_TIMEOUT=5 # minutes
