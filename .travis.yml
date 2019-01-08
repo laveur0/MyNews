@@ -50,7 +50,7 @@ before_install:
 before_script:
 #- android list targets
 - android list targets
-- echo no | android create avd --force -n test -t "android-"ANDROID_EMULATOR_API --abi $ANDROID_ABI --tag $ANDROID_TAG
+- echo no | android create avd --force -n test -t "android-"$EMULATOR_API_LEVEL --abi $ANDROID_ABI --tag $ANDROID_TAG
 #- echo no | android create avd --force -n test --package "system-images;android-$EMULATOR_API_LEVEL;google_apis;x86"
 # export ANDROID_HOME=/Users/christian-noumsi/Library/Android/sdk/tools:/Users/christian-noumsi/Library/Android/sdk/platform-tools
 - emulator -avd test -no-skin -no-audio -no-window &
