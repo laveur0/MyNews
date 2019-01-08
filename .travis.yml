@@ -5,7 +5,7 @@ sudo: false
 env:
   global:
     - ANDROID_API_LEVEL=28
-    - ANDROID_EMULATOR_LEVEL=28
+    - ANDROID_EMULATOR_LEVEL=24
     - ANDROID_BUILD_TOOLS_VERSION=28.0.3
     - ADB_INSTALL_TIMEOUT=20
     - ANDROID_ABI=x86
@@ -24,7 +24,7 @@ android:
     - extra-google-m2repository
     - extra-android-m2repository
     - addon-google_apis_x86-google-$ANDROID_EMULATOR_LEVEL
-    - sys-img-$ANDROID_ABI-google_apis-$ANDROID_EMULATOR_LEVEL
+    - sys-img-$ANDROID_ABI-android-$ANDROID_EMULATOR_LEVEL
 
 licenses:
   - android-sdk-preview-license-.+
