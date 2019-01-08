@@ -16,8 +16,8 @@ env:
  - ANDROID_API=28
  - EMULATOR_API=28
  - EMULATOR_API_LEVEL=22
- - ANDROID_ABI="armeabi-v7a"
- - ANDROID_TAG=google_apis
+ - ANDROID_ABI=x86
+ - ANDROID_TAG=google_apis_playstore
  - ANDROID_BUILD_TOOLS=28.0.0
  - ADB_INSTALL_TIMEOUT=5 # minutes
 
@@ -50,7 +50,7 @@ before_install:
 before_script:
 #- android list targets
 - android list targets
-- echo no | android create avd --force -n test -t "android-"$EMULATOR_API_LEVEL --abi $ANDROID_ABI --tag $ANDROID_TAG
+- echo no | android create avd --force -n test -t "android-"$EMULATOR_API --abi $ANDROID_ABI --tag $ANDROID_TAG
 #- echo no | android create avd --force -n test --package "system-images;android-$EMULATOR_API_LEVEL;google_apis;x86"
 # export ANDROID_HOME=/Users/christian-noumsi/Library/Android/sdk/tools:/Users/christian-noumsi/Library/Android/sdk/platform-tools
 - emulator -avd test -no-skin -no-audio -no-window &
