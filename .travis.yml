@@ -23,7 +23,7 @@ android:
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
-    - addon-google_apis_x86-google-$ANDROID_EMULATOR_LEVEL
+    - addon-armeabi-v7a-google-$ANDROID_EMULATOR_LEVEL
     - sys-img-$ANDROID_ABI-google_apis-$ANDROID_EMULATOR_LEVEL
 
 licenses:
