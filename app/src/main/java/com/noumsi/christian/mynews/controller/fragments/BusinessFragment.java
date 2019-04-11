@@ -3,11 +3,6 @@ package com.noumsi.christian.mynews.controller.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +17,11 @@ import com.noumsi.christian.mynews.webservices.searcharticle.Search;
 import com.noumsi.christian.mynews.webservices.searcharticle.SearchArticleCall;
 import com.noumsi.christian.mynews.webservices.searcharticle.SearchArticleDoc;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -36,7 +36,8 @@ import static com.noumsi.christian.mynews.utils.Constants.EXTRA_URL_ARTICLE;
 public class BusinessFragment extends Fragment implements SearchArticleCall.Callbacks{
 
     @BindView(R.id.fragment_business_swipe_container) SwipeRefreshLayout mSwipeRefreshLayout;
-    @BindView(R.id.fragment_business_recycler_view) RecyclerView mRecyclerView;
+    @BindView(R.id.fragment_business_recycler_view)
+    RecyclerView mRecyclerView;
     private ArticleAdapter mArticleAdapter;
     private Search mSearch = null;
     private RequestManager mGlide;

@@ -9,7 +9,7 @@
     tools:context=".controller.activities.MainActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <android.support.v4.view.ViewPager
+    <androidx.core.view.ViewPager
         android:id="@+id/content_main_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

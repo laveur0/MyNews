@@ -1,18 +1,18 @@
 package com.noumsi.christian.mynews.views.adapters;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.RequestManager;
 import com.noumsi.christian.mynews.R;
 import com.noumsi.christian.mynews.views.TopStoryResultViewHolder;
 import com.noumsi.christian.mynews.webservices.topstorie.TopStories;
 import com.noumsi.christian.mynews.webservices.topstorie.TopStoriesResult;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by christian-noumsi on 21/08/2018.

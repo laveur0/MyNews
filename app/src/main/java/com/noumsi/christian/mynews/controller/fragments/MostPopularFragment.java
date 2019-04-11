@@ -3,11 +3,6 @@ package com.noumsi.christian.mynews.controller.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +16,11 @@ import com.noumsi.christian.mynews.webservices.mostpopular.MostPopular;
 import com.noumsi.christian.mynews.webservices.mostpopular.MostPopularCall;
 import com.noumsi.christian.mynews.webservices.mostpopular.MostPopularResult;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -37,8 +37,10 @@ public class MostPopularFragment extends Fragment implements MostPopularCall.Cal
     private PopularAdapter mPopularAdapter;
     private MostPopular mMostPopular = null;
     private static final String TAG = "MostPopularFragment";
-    @BindView(R.id.fragment_most_popular_swipe_container) SwipeRefreshLayout mSwipeRefreshLayout;
-    @BindView(R.id.fragment_most_popular_recycler_view) RecyclerView mRecyclerView;
+    @BindView(R.id.fragment_most_popular_swipe_container)
+    SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.fragment_most_popular_recycler_view)
+    RecyclerView mRecyclerView;
 
     public MostPopularFragment() {
         // Required empty public constructor

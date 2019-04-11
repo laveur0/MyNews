@@ -3,19 +3,11 @@ package com.noumsi.christian.mynews.controller.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.noumsi.christian.mynews.GlideApp;
 import com.noumsi.christian.mynews.R;
 import com.noumsi.christian.mynews.controller.activities.ArticleContainerActivity;
 import com.noumsi.christian.mynews.utils.ItemClickSupport;
@@ -24,6 +16,11 @@ import com.noumsi.christian.mynews.webservices.topstorie.TopStories;
 import com.noumsi.christian.mynews.webservices.topstorie.TopStoriesCall;
 import com.noumsi.christian.mynews.webservices.topstorie.TopStoriesResult;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -39,8 +36,10 @@ public class TopStoriesFragment extends Fragment implements TopStoriesCall.Callb
     private TopStories mTopStories = null;
     private static final String TAG = "TopStoriesFragment";
 
-    @BindView(R.id.fragment_top_stories_rv) RecyclerView rv;
-    @BindView(R.id.fragment_top_stories_swipe_container) SwipeRefreshLayout mSwipeRefreshLayout;
+    @BindView(R.id.fragment_top_stories_rv)
+    RecyclerView rv;
+    @BindView(R.id.fragment_top_stories_swipe_container)
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     public TopStoriesFragment() {
         // Required empty public constructor

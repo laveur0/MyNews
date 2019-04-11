@@ -8,9 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.noumsi.christian.mynews.R;
@@ -22,6 +19,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
 
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_BEGIN_DATE;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_FQ;

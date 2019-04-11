@@ -5,8 +5,6 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.util.Log;
 import android.widget.CheckBox;
@@ -18,6 +16,8 @@ import com.noumsi.christian.mynews.controller.receivers.NotificationReceiver;
 
 import java.util.Calendar;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import butterknife.BindView;
 
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_BEGIN_DATE;

@@ -1,11 +1,10 @@
 package com.noumsi.christian.mynews.webservices.searcharticle;
 
-import android.support.annotation.Nullable;
-
 import com.noumsi.christian.mynews.webservices.NYTService;
 
 import java.lang.ref.WeakReference;
 
+import androidx.annotation.Nullable;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;

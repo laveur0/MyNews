@@ -1,13 +1,13 @@
 package com.noumsi.christian.mynews.views.adapters;
 
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-
 import com.noumsi.christian.mynews.controller.fragments.BusinessFragment;
 import com.noumsi.christian.mynews.controller.fragments.MostPopularFragment;
 import com.noumsi.christian.mynews.controller.fragments.TopStoriesFragment;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
 
 /**
  * Created by christian-noumsi on 21/08/2018.

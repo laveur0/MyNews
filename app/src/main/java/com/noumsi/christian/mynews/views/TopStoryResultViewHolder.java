@@ -1,6 +1,5 @@
 package com.noumsi.christian.mynews.views;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,6 +9,7 @@ import com.noumsi.christian.mynews.GlideApp;
 import com.noumsi.christian.mynews.R;
 import com.noumsi.christian.mynews.webservices.topstorie.TopStoriesResult;
 
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

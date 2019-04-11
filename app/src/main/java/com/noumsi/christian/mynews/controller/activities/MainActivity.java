@@ -2,25 +2,28 @@ package com.noumsi.christian.mynews.controller.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.material.tabs.TabLayout;
 import com.noumsi.christian.mynews.R;
 import com.noumsi.christian.mynews.views.adapters.PageAdapter;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
-    @BindView(R.id.content_main_viewpager) ViewPager mViewPager;
-    @BindView(R.id.app_bar_main_tabs) TabLayout mTabLayout;
-    @BindView(R.id.toolbar) Toolbar mToolbar;
+    @BindView(R.id.content_main_viewpager)
+    ViewPager mViewPager;
+    @BindView(R.id.app_bar_main_tabs)
+    TabLayout mTabLayout;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

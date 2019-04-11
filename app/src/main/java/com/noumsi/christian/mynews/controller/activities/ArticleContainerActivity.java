@@ -1,12 +1,12 @@
 package com.noumsi.christian.mynews.controller.activities;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.webkit.WebView;
 
 import com.noumsi.christian.mynews.R;
 
+import androidx.appcompat.app.AppCompatActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
