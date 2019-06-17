@@ -1,18 +1,17 @@
 package com.noumsi.christian.mynews.views.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.noumsi.christian.mynews.R;
 import com.noumsi.christian.mynews.views.PopularViewHolder;
 import com.noumsi.christian.mynews.webservices.mostpopular.MostPopular;
 import com.noumsi.christian.mynews.webservices.mostpopular.MostPopularResult;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by christian-noumsi on 30/08/2018.
@@ -42,7 +41,6 @@ public class PopularAdapter extends RecyclerView.Adapter<PopularViewHolder> {
 
     @Override
     public int getItemCount() {
-        Log.d(TAG, "getItemCount: " + String.valueOf(mMostPopular != null ? mMostPopular.getResults().size() : 0));
         return mMostPopular != null ? mMostPopular.getResults().size() : 0;
     }
 

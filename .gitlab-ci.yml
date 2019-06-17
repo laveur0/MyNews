@@ -1,0 +1,59 @@
+image: registry.gitlab.com/laveur0/android-ci:66632545
+
+variables:
+  APP_NAME: "mynews"
+cache:
+  key: ${CI_PROJECT_ID}
+  paths:
+    - .m2/
+    - .gradle/
+stages:
+  - build
+  - test
+  - package
+before_script:
+  - export GRADLE_USER_HOME=$(pwd)/.gradle
+  - chmod +x ./gradlew
+  - apt-get update -y && apt-get install wget -y
+.build_template: &build
+  stage: build
+  artifacts:
+    expire_in: 4 hours
+    paths:
+      - app/build/outputs/
+build:develop:
+  <<: *build
+  script:
+    - ./gradlew assembleDebug
+.test_template: &test
+  stage: test
+  only:
+    - master
+    - develop
+test:unit:
+  <<: *test
+  script:
+    - ./gradlew test
+test:functional:
+  <<: *test
+  script:
+    - ${ANDROID_HOME}/tools/emulator -avd test -no-window -no-audio
+    - ./android-wait-for-emulator
+    - adb shell input keyevent 82
+    - ./gradlew cAT
+.package_template: &package
+  before_script:
+    - export VERSION_NAME=`egrep '^[[:blank:]]+versionName[[:blank:]]'  app/build.gradle | awk '{print $2}' | sed s/\"//g`
+    - mkdir -p exported
+package:develop:
+  <<: *package
+  stage: package
+  environment: Development
+  script:
+    - mv app/build/outputs/apk/debug/app-debug.apk ./exported/${APP_NAME}-v$VERSION_NAME-debug.apk
+  dependencies:
+    - build:develop
+  artifacts:
+    expire_in: 7 days
+    paths:
+      - exported

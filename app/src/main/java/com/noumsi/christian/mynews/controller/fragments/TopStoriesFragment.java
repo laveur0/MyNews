@@ -8,6 +8,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.noumsi.christian.mynews.R;
 import com.noumsi.christian.mynews.controller.activities.ArticleContainerActivity;
 import com.noumsi.christian.mynews.utils.ItemClickSupport;
@@ -16,11 +22,6 @@ import com.noumsi.christian.mynews.webservices.topstorie.TopStories;
 import com.noumsi.christian.mynews.webservices.topstorie.TopStoriesCall;
 import com.noumsi.christian.mynews.webservices.topstorie.TopStoriesResult;
 
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -118,7 +119,7 @@ public class TopStoriesFragment extends Fragment implements TopStoriesCall.Callb
     private void updateUIWithTopStories(TopStories topStories) {
         mSwipeRefreshLayout.setRefreshing(false);
         mTopStories = topStories;
-        mStoriesAdapter.setTopStories(mTopStories);
+        mStoriesAdapter.setTopStories(topStories);
         mStoriesAdapter.notifyDataSetChanged();
     }
 
