@@ -37,7 +37,7 @@ test:unit:
 test:functional:
   <<: *test
   script:
-    - ${ANDROID_HOME}/emulator/emulator -avd test -no-window -no-audio
+    - ${ANDROID_HOME}/tools/emulator -avd test -no-window -no-audio
     - ./android-wait-for-emulator
     - adb shell input keyevent 82
     - ./gradlew cAT
