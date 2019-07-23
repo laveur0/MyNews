@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import androidx.test.filters.LargeTest;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.runner.AndroidJUnit4;
+
 import com.noumsi.christian.mynews.R;
 
 import org.junit.Before;
@@ -11,11 +15,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import androidx.test.filters.LargeTest;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
-
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
+import static androidx.test.espresso.Espresso.closeSoftKeyboard;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -49,7 +50,7 @@ public class NotificationActivityTest {
     }
 
     @Test
-    public void switchIsEnable() {
+    public void switchIsEnable() throws InterruptedException {
         mSharedPreferences.edit().clear().apply();
         activityTestRule.launchActivity(new Intent());
 
@@ -61,6 +62,9 @@ public class NotificationActivityTest {
                 .check(matches(isDisplayed()))
                 .perform(click())
                 .check(matches(isChecked()));
+
+        closeSoftKeyboard();
+        Thread.sleep(1000);
 
         onView(withId(R.id.search_widget_switch))
                 .check(matches(isDisplayed()))

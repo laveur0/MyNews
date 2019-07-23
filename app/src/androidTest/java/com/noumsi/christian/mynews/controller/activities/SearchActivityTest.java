@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import androidx.test.espresso.intent.Intents;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.runner.AndroidJUnit4;
+
 import com.noumsi.christian.mynews.R;
 
 import org.junit.After;
@@ -11,10 +15,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import androidx.test.espresso.intent.Intents;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 import static androidx.test.espresso.Espresso.onView;
@@ -74,12 +74,15 @@ public class SearchActivityTest {
     }
 
     @Test
-    public void openingNewActivityWhenSearchButtonClicked() {
+    public void openingNewActivityWhenSearchButtonClicked() throws InterruptedException {
         configureWidgets();
 
         onView(withId(R.id.activity_search_search_button))
                 .check(matches(isDisplayed()))
                 .perform(click());
+
+        closeSoftKeyboard();
+        Thread.sleep(1000);
 
         intended(hasComponent(SearchResultActivity.class.getName()));
     }
