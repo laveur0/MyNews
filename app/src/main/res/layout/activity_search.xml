@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:layout_margin="@dimen/activity_horizontal_margin"
+    android:orientation="vertical"
     tools:context=".controller.activities.SearchActivity">
 
-    <include layout="@layout/search_widget"/>
-
-    <Button
-        android:id="@+id/activity_search_search_button"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/action_search"
-        android:textAlignment="center"
-        android:textColor="@color/selector_button"
-        android:background="@drawable/selector_button"
-        android:enabled="false"
-        android:layout_marginTop="@dimen/activity_vertical_margin"/>
+        android:orientation="vertical">
 
-</LinearLayout>
+        <include layout="@layout/search_widget" />
+
+        <Button
+            android:id="@+id/activity_search_search_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="@drawable/selector_button"
+            android:enabled="false"
+            android:text="@string/action_search"
+            android:textAlignment="center"
+            android:textColor="@color/selector_button" />
+
+    </LinearLayout>
+
+</ScrollView>

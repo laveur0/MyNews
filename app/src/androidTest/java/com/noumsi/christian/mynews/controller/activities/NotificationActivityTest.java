@@ -20,6 +20,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
@@ -55,10 +56,12 @@ public class NotificationActivityTest {
         activityTestRule.launchActivity(new Intent());
 
         onView(withId(R.id.search_widget_edit_text_query))
+                .perform(scrollTo())
                 .check(matches(isDisplayed()))
                 .perform(clearText(), typeText("Cameroun"), closeSoftKeyboard());
 
         onView(withId(R.id.search_widget_arts_cat))
+                .perform(scrollTo())
                 .check(matches(isDisplayed()))
                 .perform(click())
                 .check(matches(isChecked()));
@@ -66,6 +69,7 @@ public class NotificationActivityTest {
         Thread.sleep(1000);
 
         onView(withId(R.id.search_widget_switch))
+                .perform(scrollTo())
                 .check(matches(isDisplayed()))
                 .check(matches(isEnabled()));
     }

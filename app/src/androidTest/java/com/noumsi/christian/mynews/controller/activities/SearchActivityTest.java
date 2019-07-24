@@ -21,6 +21,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.intent.Intents.intended;
@@ -60,6 +61,7 @@ public class SearchActivityTest {
                 .perform(clearText(), typeText("France"), closeSoftKeyboard());
 
         onView(withId(R.id.search_widget_arts_cat))
+                .perform(scrollTo())
                 .check(matches(isDisplayed()))
                 .perform(click());
     }
@@ -71,6 +73,7 @@ public class SearchActivityTest {
         Thread.sleep(1000);
 
         onView(withId(R.id.activity_search_search_button))
+                .perform(scrollTo())
                 .check(matches(isDisplayed()))
                 .check(matches(isEnabled()));
     }
@@ -82,6 +85,7 @@ public class SearchActivityTest {
         Thread.sleep(1000);
 
         onView(withId(R.id.activity_search_search_button))
+                .perform(scrollTo())
                 .check(matches(isDisplayed()))
                 .perform(click());
 
