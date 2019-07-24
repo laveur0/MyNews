@@ -65,8 +65,10 @@ public class SearchActivityTest {
     }
 
     @Test
-    public void searchButtonIsEnable() {
+    public void searchButtonIsEnable() throws InterruptedException {
         configureWidgets();
+
+        Thread.sleep(1000);
 
         onView(withId(R.id.activity_search_search_button))
                 .check(matches(isDisplayed()))
@@ -77,12 +79,11 @@ public class SearchActivityTest {
     public void openingNewActivityWhenSearchButtonClicked() throws InterruptedException {
         configureWidgets();
 
+        Thread.sleep(1000);
+
         onView(withId(R.id.activity_search_search_button))
                 .check(matches(isDisplayed()))
                 .perform(click());
-
-        closeSoftKeyboard();
-        Thread.sleep(1000);
 
         intended(hasComponent(SearchResultActivity.class.getName()));
     }

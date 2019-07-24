@@ -16,10 +16,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
-import static androidx.test.espresso.Espresso.closeSoftKeyboard;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
@@ -56,14 +56,13 @@ public class NotificationActivityTest {
 
         onView(withId(R.id.search_widget_edit_text_query))
                 .check(matches(isDisplayed()))
-                .perform(clearText(), typeText("Cameroun"));
+                .perform(clearText(), typeText("Cameroun"), closeSoftKeyboard());
 
         onView(withId(R.id.search_widget_arts_cat))
                 .check(matches(isDisplayed()))
                 .perform(click())
                 .check(matches(isChecked()));
 
-        closeSoftKeyboard();
         Thread.sleep(1000);
 
         onView(withId(R.id.search_widget_switch))
