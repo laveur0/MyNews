@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class MainActivityTest {
 
-    MainActivity mMainActivity = mock(MainActivity.class);
+    private MainActivity mMainActivity = mock(MainActivity.class);
     @Mock
     private Menu mMenu;
     @Mock

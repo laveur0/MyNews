@@ -3,6 +3,12 @@ package com.noumsi.christian.mynews.controller.activities;
 import android.content.Context;
 import android.content.Intent;
 
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.espresso.intent.Intents;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.rule.ActivityTestRule;
+
 import com.noumsi.christian.mynews.R;
 import com.noumsi.christian.mynews.webservices.searcharticle.Search;
 import com.noumsi.christian.mynews.webservices.searcharticle.SearchArticleDoc;
@@ -18,18 +24,12 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.test.espresso.contrib.RecyclerViewActions;
-import androidx.test.espresso.intent.Intents;
-import androidx.test.rule.ActivityTestRule;
-import androidx.test.runner.AndroidJUnit4;
-
-import static androidx.test.InstrumentationRegistry.getInstrumentation;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_BEGIN_DATE;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_END_DATE;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_FQ;
@@ -50,7 +50,7 @@ public class SearchResultActivityTest {
 
 
     @Before
-    public void setUp() throws Throwable {
+    public void setUp() {
         context = getInstrumentation().getTargetContext();
 
         // We define new intent for result activity
@@ -93,12 +93,7 @@ public class SearchResultActivityTest {
         final Search search = new Search();
         search.setResponse(searchArticleResponse);
 
-        mSearchResultActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mSearchResultActivity.onResponse(search);
-            }
-        });
+        mSearchResultActivity.runOnUiThread(() -> mSearchResultActivity.onResponse(search));
         onView(withId(R.id.activity_search_result_recycler_view))
                 .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
 

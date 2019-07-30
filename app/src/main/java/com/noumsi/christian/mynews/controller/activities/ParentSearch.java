@@ -11,13 +11,14 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Switch;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.noumsi.christian.mynews.R;
 import com.noumsi.christian.mynews.controller.receivers.NotificationReceiver;
 
 import java.util.Calendar;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import butterknife.BindView;
 
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_BEGIN_DATE;
@@ -133,7 +134,7 @@ public class ParentSearch extends AppCompatActivity {
 
     /**
      * To check if a checkbox are selected
-     * @return
+     * @return boolean
      */
     protected boolean checkBoxAreChecked() {
         if (mCheckBoxTravelCat.isChecked()) return true;
@@ -141,8 +142,7 @@ public class ParentSearch extends AppCompatActivity {
         else if (mCheckBoxPoliticsCat.isChecked()) return true;
         else if (mCheckBoxEntrepreneursCat.isChecked()) return true;
         else if (mCheckBoxBusinessCat.isChecked()) return true;
-        else if (mCheckBoxArtsCat.isChecked()) return true;
-        else return false;
+        else return mCheckBoxArtsCat.isChecked();
     }
 
     /**

@@ -5,13 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.noumsi.christian.mynews.R;
 import com.noumsi.christian.mynews.views.ArticleViewHolder;
 import com.noumsi.christian.mynews.webservices.searcharticle.Search;
 import com.noumsi.christian.mynews.webservices.searcharticle.SearchArticleDoc;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by christian-noumsi on 30/08/2018.
@@ -53,7 +53,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleViewHolder> {
     /**
      * We get article at docs level of json file in article result
      * @param position index of article to return
-     * @return
+     * @return searchArticleDoc object
      */
     public SearchArticleDoc getArticle(int position) {
         return mSearch.getResponse().getDocs().get(position);

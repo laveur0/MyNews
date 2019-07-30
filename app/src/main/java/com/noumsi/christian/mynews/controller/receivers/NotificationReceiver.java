@@ -10,6 +10,10 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.NotificationCompat;
+
 import com.noumsi.christian.mynews.R;
 import com.noumsi.christian.mynews.webservices.searcharticle.Search;
 import com.noumsi.christian.mynews.webservices.searcharticle.SearchArticleCall;
@@ -19,10 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
+import java.util.Objects;
 
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_BEGIN_DATE;
 import static com.noumsi.christian.mynews.utils.Constants.EXTRA_FQ;
@@ -59,10 +60,12 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
     }
 
     private void loadIntentExtras(Intent intent) {
-        mQueryTerm = intent.getExtras().getString(EXTRA_QUERY_TERM);
-        mBeginDate = intent.getExtras().getString(EXTRA_BEGIN_DATE);
-        mFQ = intent.getExtras().getString(EXTRA_FQ);
-        mNamePreferences = intent.getExtras().getString(EXTRA_NAME_ACTIVITY);
+        if (intent.getExtras() != null) {
+            mQueryTerm = intent.getExtras().getString(EXTRA_QUERY_TERM);
+            mBeginDate = intent.getExtras().getString(EXTRA_BEGIN_DATE);
+            mFQ = intent.getExtras().getString(EXTRA_FQ);
+            mNamePreferences = intent.getExtras().getString(EXTRA_NAME_ACTIVITY);
+        }
     }
 
     private void executeHTTPRequestWithRetrofit() {
@@ -70,7 +73,7 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
         String beginDate = null;
 
         try {
-            beginDate = mSimpleDateFormat.format(new SimpleDateFormat("dd/MM/yyyy", Locale.US).parse(mBeginDate));
+            beginDate = mSimpleDateFormat.format(Objects.requireNonNull(new SimpleDateFormat("dd/MM/yyyy", Locale.US).parse(mBeginDate)));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -99,7 +102,7 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
             PendingIntent pendingIntent;
             Date date = new SimpleDateFormat("dd/MM/yyyy", Locale.US).parse(mBeginDate);
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(date);
+            calendar.setTime(Objects.requireNonNull(date));
             calendar.set(Calendar.HOUR_OF_DAY, 01);
             calendar.set(Calendar.MINUTE, 00);
             calendar.set(Calendar.SECOND, 00);
@@ -121,7 +124,7 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
     /**
      * Create notification to show number of articles found and
      * create a PendingIntent to open result in result activity
-     * @param numberOfArticle
+     * @param numberOfArticle to show in notification
      */
     private void showNotification(int numberOfArticle) {
         NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);

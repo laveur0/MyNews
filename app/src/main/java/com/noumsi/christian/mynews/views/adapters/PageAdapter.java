@@ -1,23 +1,26 @@
 package com.noumsi.christian.mynews.views.adapters;
 
-import com.noumsi.christian.mynews.controller.fragments.BusinessFragment;
-import com.noumsi.christian.mynews.controller.fragments.MostPopularFragment;
-import com.noumsi.christian.mynews.controller.fragments.TopStoriesFragment;
-
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+
+import com.noumsi.christian.mynews.controller.fragments.BusinessFragment;
+import com.noumsi.christian.mynews.controller.fragments.MostPopularFragment;
+import com.noumsi.christian.mynews.controller.fragments.TopStoriesFragment;
 
 /**
  * Created by christian-noumsi on 21/08/2018.
  */
 public class PageAdapter extends FragmentPagerAdapter {
 
-    public PageAdapter(FragmentManager fm) {
-        super(fm);
+
+    public PageAdapter(@NonNull FragmentManager fm) {
+        super(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
     }
 
+    @NonNull
     @Override
     public Fragment getItem(int position) {
         switch (position) {
@@ -25,10 +28,8 @@ public class PageAdapter extends FragmentPagerAdapter {
                 return TopStoriesFragment.newInstance();
             case 1:
                 return MostPopularFragment.newInstance();
-            case 2:
+            default:
                 return BusinessFragment.newInstance();
-                default:
-                    return null;
         }
     }
 

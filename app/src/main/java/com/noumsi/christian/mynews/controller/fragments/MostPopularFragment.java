@@ -8,6 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.noumsi.christian.mynews.R;
 import com.noumsi.christian.mynews.controller.activities.ArticleContainerActivity;
 import com.noumsi.christian.mynews.utils.ItemClickSupport;
@@ -16,11 +23,6 @@ import com.noumsi.christian.mynews.webservices.mostpopular.MostPopular;
 import com.noumsi.christian.mynews.webservices.mostpopular.MostPopularCall;
 import com.noumsi.christian.mynews.webservices.mostpopular.MostPopularResult;
 
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -57,7 +59,7 @@ public class MostPopularFragment extends Fragment implements MostPopularCall.Cal
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_most_popular, container, false);
@@ -86,27 +88,19 @@ public class MostPopularFragment extends Fragment implements MostPopularCall.Cal
     // configure item click on Recycler view
     private void configureOnClickRecyclerView() {
         ItemClickSupport.addTo(mRecyclerView, R.layout.fragment_article_item)
-                .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                        MostPopularResult mostPopularResult = mPopularAdapter.getPopular(position);
-                        // We start article container activity
-                        Intent articleContainer = new Intent(getContext(), ArticleContainerActivity.class);
-                        articleContainer.putExtra(EXTRA_URL_ARTICLE, mostPopularResult.getUrl());
-                        articleContainer.putExtra(EXTRA_TITLE_ARTICLE, mostPopularResult.getTitle());
-                        startActivity(articleContainer);
-                    }
+                .setOnItemClickListener((recyclerView, position, v) -> {
+                    MostPopularResult mostPopularResult = mPopularAdapter.getPopular(position);
+                    // We start article container activity
+                    Intent articleContainer = new Intent(getContext(), ArticleContainerActivity.class);
+                    articleContainer.putExtra(EXTRA_URL_ARTICLE, mostPopularResult.getUrl());
+                    articleContainer.putExtra(EXTRA_TITLE_ARTICLE, mostPopularResult.getTitle());
+                    startActivity(articleContainer);
                 });
     }
 
     // Configure the SwipeRefreshLayout
     private void configureSwipeRefreshLayout() {
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                executeHTTPRequestWithRetrofit();
-            }
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(this::executeHTTPRequestWithRetrofit);
     }
 
     private void executeHTTPRequestWithRetrofit() {
@@ -136,10 +130,10 @@ public class MostPopularFragment extends Fragment implements MostPopularCall.Cal
     @Override
     public void onFailure() {
         Log.e(TAG, "Error");
-        this.updateUIWhenStoppingHTTPRequest("An error happened");
+        this.updateUIWhenStoppingHTTPRequest();
     }
 
-    private void updateUIWhenStoppingHTTPRequest(String response) {
-
+    private void updateUIWhenStoppingHTTPRequest() {
+        Log.e(TAG, "updateUIWhenStoppingHTTPRequest: failure");
     }
 }

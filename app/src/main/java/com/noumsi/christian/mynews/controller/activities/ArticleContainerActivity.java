@@ -4,9 +4,11 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.webkit.WebView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.noumsi.christian.mynews.R;
 
-import androidx.appcompat.app.AppCompatActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -37,11 +39,10 @@ public class ArticleContainerActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -56,11 +57,10 @@ public class ArticleContainerActivity extends AppCompatActivity {
 
     protected boolean getParametersInBundle() {
         Bundle extras = getIntent().getExtras();
-        mUrlArticle = extras.getString(EXTRA_URL_ARTICLE, "");
-        mTitleArticle = extras.getString(EXTRA_TITLE_ARTICLE, "");
-        if (mUrlArticle.isEmpty())
-            return false;
-        else
-            return true;
+        if (extras != null) {
+            mUrlArticle = extras.getString(EXTRA_URL_ARTICLE, "");
+            mTitleArticle = extras.getString(EXTRA_TITLE_ARTICLE, "");
+        }
+        return !mUrlArticle.isEmpty();
     }
 }

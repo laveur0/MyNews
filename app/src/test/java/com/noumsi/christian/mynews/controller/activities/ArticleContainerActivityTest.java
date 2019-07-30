@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ArticleContainerActivityTest {
 
-    ArticleContainerActivity mArticleContainerActivity = mock(ArticleContainerActivity.class);
+    private ArticleContainerActivity mArticleContainerActivity = mock(ArticleContainerActivity.class);
     @Mock
     Bundle mBundle;
 

@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 import static android.content.Context.ALARM_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
@@ -26,13 +27,16 @@ public class BootCompleteReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        // an Intent broadcast.
+        // an Intent broadcast for bootComplete.
 
-        //We configure notification activity alarm
-        this.configureNotification(context, "NotificationActivity", 01, 00, 00, 100);
+        // We ensure of this by verify action
+        if (Objects.equals(intent.getAction(), Intent.ACTION_BOOT_COMPLETED)) {
+            //We configure notification activity alarm
+            this.configureNotification(context, "NotificationActivity", 1, 0, 0, 100);
 
-        // We configure search activity alarm
-        this.configureNotification(context, "SearchActivity", 01, 00, 00, 100);
+            // We configure search activity alarm
+            this.configureNotification(context, "SearchActivity", 1, 0, 0, 100);
+        }
     }
 
     private void configureNotification(Context context, String name, int hour, int minute, int second, int requestCode) {
@@ -66,7 +70,7 @@ public class BootCompleteReceiver extends BroadcastReceiver {
 
         // We create an Alarm Manager
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntentReceiver);
+        Objects.requireNonNull(alarmManager).setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntentReceiver);
         Log.d(TAG, "configureNotificationBroadcast: alarmManager enable");
     }
 

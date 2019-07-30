@@ -131,7 +131,7 @@ public class NotificationActivity extends ParentSearch implements View.OnClickLi
                     this.disableNotificationInSearchActivity();
                 }
                 // We configure broadcast receiver with alarm manager
-                this.configureNotificationBroadcast(01, 00, 00, 100);
+                this.configureNotificationBroadcast(1, 0, 0, 100);
             }
         } else {
             // We remove alarm manager

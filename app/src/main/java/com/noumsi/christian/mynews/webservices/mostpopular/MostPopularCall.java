@@ -1,10 +1,12 @@
 package com.noumsi.christian.mynews.webservices.mostpopular;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.noumsi.christian.mynews.webservices.NYTService;
 
 import java.lang.ref.WeakReference;
 
-import androidx.annotation.Nullable;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,12 +33,12 @@ public class MostPopularCall {
         Call<MostPopular> call = service.mostPopular(section, apiKey);
         call.enqueue(new Callback<MostPopular>() {
             @Override
-            public void onResponse(Call<MostPopular> call, Response<MostPopular> response) {
+            public void onResponse(@NonNull Call<MostPopular> call, @NonNull Response<MostPopular> response) {
                 if (callbacksWeakReference.get() != null) callbacksWeakReference.get().onResponse(response.body());
             }
 
             @Override
-            public void onFailure(Call<MostPopular> call, Throwable t) {
+            public void onFailure(@NonNull Call<MostPopular> call, @NonNull Throwable t) {
                 if (callbacksWeakReference.get() != null) callbacksWeakReference.get().onFailure();
             }
         });

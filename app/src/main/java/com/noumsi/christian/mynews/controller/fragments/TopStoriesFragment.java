@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -51,7 +52,7 @@ public class TopStoriesFragment extends Fragment implements TopStoriesCall.Callb
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_top_stories, container, false);
@@ -78,27 +79,19 @@ public class TopStoriesFragment extends Fragment implements TopStoriesCall.Callb
     // configure item click on Recycler view
     private void configureOnClickRecyclerView() {
         ItemClickSupport.addTo(rv, R.layout.fragment_article_item)
-                .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                        TopStoriesResult topStoriesResult = mStoriesAdapter.getTopStoriesResult(position);
-                        // We start article container activity
-                        Intent articleContainer = new Intent(getContext(), ArticleContainerActivity.class);
-                        articleContainer.putExtra(EXTRA_URL_ARTICLE, topStoriesResult.getUrl());
-                        articleContainer.putExtra(EXTRA_TITLE_ARTICLE, topStoriesResult.getTitle());
-                        startActivity(articleContainer);
-                    }
+                .setOnItemClickListener((recyclerView, position, v) -> {
+                    TopStoriesResult topStoriesResult = mStoriesAdapter.getTopStoriesResult(position);
+                    // We start article container activity
+                    Intent articleContainer = new Intent(getContext(), ArticleContainerActivity.class);
+                    articleContainer.putExtra(EXTRA_URL_ARTICLE, topStoriesResult.getUrl());
+                    articleContainer.putExtra(EXTRA_TITLE_ARTICLE, topStoriesResult.getTitle());
+                    startActivity(articleContainer);
                 });
     }
 
     // Configure the SwipeRefreshLayout
     private void configureSwipeRefreshLayout() {
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                executeHTTPRequestWithRetrofit();
-            }
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(this::executeHTTPRequestWithRetrofit);
     }
 
     private void executeHTTPRequestWithRetrofit() {
@@ -126,10 +119,10 @@ public class TopStoriesFragment extends Fragment implements TopStoriesCall.Callb
     @Override
     public void onFailure() {
         Log.e(TAG, "Error");
-        this.updateUIWhenStoppingHTTPRequest("An error happened");
+        this.updateUIWhenStoppingHTTPRequest();
     }
 
-    private void updateUIWhenStoppingHTTPRequest(String response) {
-
+    private void updateUIWhenStoppingHTTPRequest() {
+        Log.e(TAG, "updateUIWhenStoppingHTTPRequest: Failure");
     }
 }

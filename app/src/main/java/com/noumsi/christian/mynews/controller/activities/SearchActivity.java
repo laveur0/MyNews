@@ -11,7 +11,6 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
 
 import com.noumsi.christian.mynews.R;
@@ -20,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -127,20 +127,14 @@ public class SearchActivity extends ParentSearch implements View.OnClickListener
 
     // We configure listener for DatePickerDialog
     private void configureDataSetListener() {
-        mDateSetListenerForBeginDate = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                Calendar calendar = new GregorianCalendar(year, month, dayOfMonth);
-                mEditTextDateStart.setText(simpleDateFormat.format(calendar.getTime()));
-            }
+        mDateSetListenerForBeginDate = (view, year, month, dayOfMonth) -> {
+            Calendar calendar = new GregorianCalendar(year, month, dayOfMonth);
+            mEditTextDateStart.setText(simpleDateFormat.format(calendar.getTime()));
         };
 
-        mDateSetListenerForEndDate = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                Calendar calendar = new GregorianCalendar(year, month, dayOfMonth);
-                mEditTextDateEnd.setText(simpleDateFormat.format(calendar.getTime()));
-            }
+        mDateSetListenerForEndDate = (view, year, month, dayOfMonth) -> {
+            Calendar calendar = new GregorianCalendar(year, month, dayOfMonth);
+            mEditTextDateEnd.setText(simpleDateFormat.format(calendar.getTime()));
         };
     }
 
@@ -222,7 +216,7 @@ public class SearchActivity extends ParentSearch implements View.OnClickListener
         int year = calendar.get(Calendar.YEAR);
 
         // We create object DatePickerDialog
-        DatePickerDialog dialog = null;
+        DatePickerDialog dialog;
         if (beginDate) {
             // We create an instance of DatePickerDialog
             dialog = new DatePickerDialog(
@@ -240,7 +234,7 @@ public class SearchActivity extends ParentSearch implements View.OnClickListener
                     year, month, days
             );
         }
-        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.show();
     }
 
@@ -280,7 +274,7 @@ public class SearchActivity extends ParentSearch implements View.OnClickListener
                     this.disableNotificationInNotificationActivity();
                 }
                 // We configure broadcast receiver with alarm manager
-                this.configureNotificationBroadcast(01, 00, 00, 100);
+                this.configureNotificationBroadcast(1, 0, 0, 100);
             }
         } else {
             // We remove alarm manager

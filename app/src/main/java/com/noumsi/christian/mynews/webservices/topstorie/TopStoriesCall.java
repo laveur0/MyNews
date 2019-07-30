@@ -1,5 +1,6 @@
 package com.noumsi.christian.mynews.webservices.topstorie;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.noumsi.christian.mynews.webservices.NYTService;
@@ -32,12 +33,12 @@ public class TopStoriesCall {
         Call<TopStories> call = service.topStories(apiKey);
         call.enqueue(new Callback<TopStories>() {
             @Override
-            public void onResponse(Call<TopStories> call, Response<TopStories> response) {
+            public void onResponse(@NonNull Call<TopStories> call, @NonNull Response<TopStories> response) {
                 if (callbacksWeakReference.get() != null) callbacksWeakReference.get().onResponse(response.body());
             }
 
             @Override
-            public void onFailure(Call<TopStories> call, Throwable t) {
+            public void onFailure(@NonNull Call<TopStories> call, @NonNull Throwable t) {
                 if (callbacksWeakReference.get() != null) callbacksWeakReference.get().onFailure();
             }
         });

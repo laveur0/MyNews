@@ -8,6 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.bumptech.glide.RequestManager;
 import com.noumsi.christian.mynews.R;
 import com.noumsi.christian.mynews.controller.activities.ArticleContainerActivity;
@@ -17,11 +24,6 @@ import com.noumsi.christian.mynews.webservices.searcharticle.Search;
 import com.noumsi.christian.mynews.webservices.searcharticle.SearchArticleCall;
 import com.noumsi.christian.mynews.webservices.searcharticle.SearchArticleDoc;
 
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -58,7 +60,7 @@ public class BusinessFragment extends Fragment implements SearchArticleCall.Call
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_business, container, false);
@@ -87,16 +89,13 @@ public class BusinessFragment extends Fragment implements SearchArticleCall.Call
 
     private void configureOnClickRecyclerView() {
         ItemClickSupport.addTo(mRecyclerView, R.layout.fragment_article_item)
-                .setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
-                    @Override
-                    public void onItemClicked(RecyclerView recyclerView, int position, View v) {
-                        SearchArticleDoc searchArticleDoc = mArticleAdapter.getArticle(position);
-                        // We start article container activity
-                        Intent articleContainer = new Intent(getContext(), ArticleContainerActivity.class);
-                        articleContainer.putExtra(EXTRA_URL_ARTICLE, searchArticleDoc.getWeb_url());
-                        articleContainer.putExtra(EXTRA_TITLE_ARTICLE, searchArticleDoc.getSnippet());
-                        startActivity(articleContainer);
-                    }
+                .setOnItemClickListener((recyclerView, position, v) -> {
+                    SearchArticleDoc searchArticleDoc = mArticleAdapter.getArticle(position);
+                    // We start article container activity
+                    Intent articleContainer = new Intent(getContext(), ArticleContainerActivity.class);
+                    articleContainer.putExtra(EXTRA_URL_ARTICLE, searchArticleDoc.getWeb_url());
+                    articleContainer.putExtra(EXTRA_TITLE_ARTICLE, searchArticleDoc.getSnippet());
+                    startActivity(articleContainer);
                 });
     }
 
@@ -108,12 +107,7 @@ public class BusinessFragment extends Fragment implements SearchArticleCall.Call
     private void updateUIWhenStartingHTTPRequest() { }
 
     private void configureSwipeRefreshLayout() {
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                executeHTTPRequestWithRetrofit();
-            }
-        });
+        mSwipeRefreshLayout.setOnRefreshListener(this::executeHTTPRequestWithRetrofit);
     }
 
     @Override
@@ -132,8 +126,10 @@ public class BusinessFragment extends Fragment implements SearchArticleCall.Call
     @Override
     public void onFailure() {
         Log.e(TAG, "Error");
-        this.updateUIWhenStoppingHTTPRequest("An error happened");
+        this.updateUIWhenStoppingHTTPRequest();
     }
 
-    private void updateUIWhenStoppingHTTPRequest(String message) { }
+    private void updateUIWhenStoppingHTTPRequest() {
+        Log.e(TAG, "updateUIWhenStoppingHTTPRequest: failure");
+    }
 }

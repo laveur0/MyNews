@@ -1,10 +1,12 @@
 package com.noumsi.christian.mynews.webservices.searcharticle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.noumsi.christian.mynews.webservices.NYTService;
 
 import java.lang.ref.WeakReference;
 
-import androidx.annotation.Nullable;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -27,12 +29,12 @@ public class SearchArticleCall {
         Call<Search> searchCall = service.searchArticle(q, fq, beginDate, endDate, apiKey);
         searchCall.enqueue(new Callback<Search>() {
             @Override
-            public void onResponse(Call<Search> call, Response<Search> response) {
+            public void onResponse(@NonNull Call<Search> call, @NonNull Response<Search> response) {
                 if (callbacksWeakReference.get() != null) callbacksWeakReference.get().onResponse(response.body());
             }
 
             @Override
-            public void onFailure(Call<Search> call, Throwable t) {
+            public void onFailure(@NonNull Call<Search> call, @NonNull Throwable t) {
                 if (callbacksWeakReference.get() != null) callbacksWeakReference.get().onFailure();
             }
         });
