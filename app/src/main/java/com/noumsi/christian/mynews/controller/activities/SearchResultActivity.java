@@ -59,7 +59,7 @@ public class SearchResultActivity extends AppCompatActivity implements SearchArt
         }
 
         // We set date format
-        mSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        mSimpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.US);
         // We configure recycler view
         this.configureRecyclerView();
         // we configure swipe layout
@@ -100,8 +100,9 @@ public class SearchResultActivity extends AppCompatActivity implements SearchArt
 
         try {
             beginDate = mSimpleDateFormat.format(Objects.requireNonNull(new SimpleDateFormat("dd/MM/yyyy", Locale.US).parse(mBeginDate)));
+            Log.d(TAG, "Begin date = "+beginDate);
             endDate = mSimpleDateFormat.format(Objects.requireNonNull(new SimpleDateFormat("dd/MM/yyyy", Locale.US).parse(mEndDate)));
-            Log.d(TAG, beginDate);
+            Log.d(TAG, "End date = "+endDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -119,7 +120,7 @@ public class SearchResultActivity extends AppCompatActivity implements SearchArt
 
     @Override
     public void onResponse(@Nullable Search search) {
-        Log.d(TAG, "Success");
+        Log.i(TAG, "onResponse: Success");
         if (search != null) {
             if (search.getResponse().getDocs().size() < 1)
                 showTextInDialogBox(getString(R.string.no_result_found));

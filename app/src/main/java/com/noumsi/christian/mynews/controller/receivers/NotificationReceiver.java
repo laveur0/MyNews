@@ -17,11 +17,12 @@ import androidx.core.app.NotificationCompat;
 import com.noumsi.christian.mynews.R;
 import com.noumsi.christian.mynews.webservices.searcharticle.Search;
 import com.noumsi.christian.mynews.webservices.searcharticle.SearchArticleCall;
+import com.noumsi.christian.mynews.webservices.searcharticle.SearchArticleResponse;
 
+import java.lang.ref.WeakReference;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -36,7 +37,7 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
     private SimpleDateFormat mSimpleDateFormat;
     private static final String TAG = "NotificationReceiver";
     private String MY_CHANNEL = "my_news", mNamePreferences;
-    Context mContext;
+    WeakReference<Context> mContextWeakReference;
     Intent mIntent;
     protected SharedPreferences mSharedPreferences;
 
@@ -44,7 +45,7 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
     public void onReceive(Context context, Intent intent) {
 
         Log.d(TAG, "onReceive: start");
-        mContext = context;
+        mContextWeakReference = new WeakReference<>(context);
         mIntent = intent;
 
         // We set date format
@@ -65,7 +66,15 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
             mBeginDate = intent.getExtras().getString(EXTRA_BEGIN_DATE);
             mFQ = intent.getExtras().getString(EXTRA_FQ);
             mNamePreferences = intent.getExtras().getString(EXTRA_NAME_ACTIVITY);
+
+            Log.d(TAG, "loadIntentExtras: " +
+                    "Query : "+mQueryTerm+
+                    ", Categories : "+mFQ+
+                    ", Begin date : "+mBeginDate+
+                    ", preference file name : "+mNamePreferences);
+            return;
         }
+        Log.i(TAG, "loadIntentExtras: extras intent is null");
     }
 
     private void executeHTTPRequestWithRetrofit() {
@@ -73,23 +82,28 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
         String beginDate = null;
 
         try {
-            beginDate = mSimpleDateFormat.format(Objects.requireNonNull(new SimpleDateFormat("dd/MM/yyyy", Locale.US).parse(mBeginDate)));
+            beginDate = mSimpleDateFormat.format(Objects.requireNonNull(new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE).parse(mBeginDate)));
+            Log.d(TAG, "executeHTTPRequestWithRetrofit: Begin date : "+beginDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        SearchArticleCall.fetchSearchArticle(this, mQueryTerm, mFQ, beginDate, null, mContext.getString(R.string.api_key_nyt));
+        SearchArticleCall.fetchSearchArticle(this, mQueryTerm, mFQ, beginDate, null, mContextWeakReference.get().getString(R.string.api_key_nyt));
     }
 
     @Override
     public void onResponse(@Nullable Search search) {
-        Log.d(TAG, "Success");
+        Log.i(TAG, "onResponse: Success");
         if (search != null) {
-            if (search.getResponse().getDocs().size() > 0) {
-                showNotification(search.getResponse().getDocs().size());
+            SearchArticleResponse response = search.getResponse();
+            if (response.getDocs().size() > 0) {
+                Log.d(TAG, "onResponse: There is "+response.getMeta().getHits()+" article(s)");
+                showNotification(response.getMeta().getHits());
                 // We set new begin date for research
                 this.modifyDateOfResearch();
+                return;
             }
+            Log.i(TAG, "onResponse: There is no article");
         } else
             Log.d(TAG, "onResponse: result is null");
     }
@@ -99,20 +113,22 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
      */
     private void modifyDateOfResearch() {
         try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE);
             PendingIntent pendingIntent;
-            Date date = new SimpleDateFormat("dd/MM/yyyy", Locale.US).parse(mBeginDate);
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(Objects.requireNonNull(date));
-            calendar.set(Calendar.HOUR_OF_DAY, 01);
+            calendar.setTime(Objects.requireNonNull(sdf.parse(mBeginDate)));
+            calendar.set(Calendar.HOUR_OF_DAY, 9);
             calendar.set(Calendar.MINUTE, 00);
             calendar.set(Calendar.SECOND, 00);
             calendar.set(Calendar.AM_PM, Calendar.PM);
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-            String dateToString = calendar.get(Calendar.DAY_OF_MONTH)+"/"+calendar.get(Calendar.MONTH)+"/"+calendar.get(Calendar.YEAR);
+            calendar.add(Calendar.DATE, 1);
+            String dateToString = sdf.format(calendar.getTime());
+
+            Log.d(TAG, "modifyDateOfResearch: New Begin date : "+dateToString);
 
             // modify the pending intent
             mIntent.putExtra(EXTRA_BEGIN_DATE, dateToString);
-            pendingIntent = PendingIntent.getBroadcast(mContext, 100, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            pendingIntent = PendingIntent.getBroadcast(mContextWeakReference.get(), 100, mIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             // We save new date in preference for new alarm when we restart phone
             mSharedPreferences.edit().putString(EXTRA_BEGIN_DATE, dateToString).apply();
@@ -127,7 +143,7 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
      * @param numberOfArticle to show in notification
      */
     private void showNotification(int numberOfArticle) {
-        NotificationManager notificationManager = (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) mContextWeakReference.get().getSystemService(Context.NOTIFICATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // We create channel
@@ -135,10 +151,10 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
             createChannel(notificationManager);
         }
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContext, MY_CHANNEL)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mContextWeakReference.get(), MY_CHANNEL)
                 .setSmallIcon(R.drawable.ic_arrow_drop_down_black_24dp)
-                .setContentTitle(mContext.getString(R.string.notification_title))
-                .setContentText(numberOfArticle + " " + mContext.getString(R.string.notification_content_text))
+                .setContentTitle(mContextWeakReference.get().getString(R.string.notification_title))
+                .setContentText(numberOfArticle + " " + mContextWeakReference.get().getString(R.string.notification_content_text))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
 
@@ -150,7 +166,7 @@ public class NotificationReceiver extends BroadcastReceiver implements SearchArt
     private void createChannel(NotificationManager notificationManager) {
         NotificationChannel myChannel = new NotificationChannel(
                         MY_CHANNEL,
-                        mContext.getString(R.string.title_activity_main),
+                        mContextWeakReference.get().getString(R.string.title_activity_main),
                         NotificationManager.IMPORTANCE_DEFAULT);
 
         notificationManager.createNotificationChannel(myChannel);

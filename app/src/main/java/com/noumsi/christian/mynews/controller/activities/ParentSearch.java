@@ -17,7 +17,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.noumsi.christian.mynews.R;
 import com.noumsi.christian.mynews.controller.receivers.NotificationReceiver;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import butterknife.BindView;
 
@@ -185,9 +187,11 @@ public class ParentSearch extends AppCompatActivity {
         Intent receiver = new Intent(getApplicationContext(), NotificationReceiver.class);
         receiver.putExtra(EXTRA_QUERY_TERM, mEditTextQuery.getText().toString());
         // we construct fq of search service and send to intent
-        receiver.putExtra(EXTRA_FQ, getFQ());
+        receiver.putExtra(EXTRA_FQ, this.getFQ());
+
         // We get date in dd/MM/yyyy format
-        String date = calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.FRANCE);
+        String date = sdf.format(calendar.getTime());
         receiver.putExtra(EXTRA_BEGIN_DATE, date);
         receiver.putExtra(EXTRA_NAME_ACTIVITY, mNameActivity);
 
@@ -198,7 +202,7 @@ public class ParentSearch extends AppCompatActivity {
         mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntentReceiver);
 
         // we save parameters for reload alarm in boot complete receiver
-        this.saveExtratOfReceiverInPreferences(date, getFQ());
+        this.saveExtratOfReceiverInPreferences(date, this.getFQ());
 
         Log.d(TAG, "configureNotificationBroadcast: Alarm manager enable");
     }

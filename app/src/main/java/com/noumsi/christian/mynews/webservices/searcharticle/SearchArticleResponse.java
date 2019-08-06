@@ -9,7 +9,18 @@ import java.util.List;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchArticleResponse {
+
+    private SearchArticleMeta meta;
+
     private List<SearchArticleDoc> docs;
+
+    public SearchArticleMeta getMeta() {
+        return meta;
+    }
+
+    public void setMeta(SearchArticleMeta meta) {
+        this.meta = meta;
+    }
 
     public List<SearchArticleDoc> getDocs() {
         return docs;
